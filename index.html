@@ -2,7 +2,7 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <title>非物質文化遺產：涼茶舖經營大亨 (傳承典藏版 5.1)</title>
+    <title>非物質文化遺產：涼茶舖經營大亨 (傳承典藏版 5.2)</title>
     <style>
         /* [完全保留你原始的佈局與顏色設定] */
         :root { --primary-color: #5d4037; --bg-color: #efebe9; --neon-color: #ff1100; }
@@ -63,6 +63,35 @@
         .fairy-bubble { display: none; position: absolute; bottom: 85px; right: 5px; width: 240px; background: #ffffff; border: 2px solid #4caf50; border-radius: 12px; padding: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-size: 13px; text-align: left; line-height: 1.6; color: #2d5a2f; }
         .fairy-bubble::after { content: ''; position: absolute; bottom: -10px; right: 30px; border-width: 10px 10px 0; border-style: solid; border-color: #4caf50 transparent; }
         .fairy-bubble-title { font-weight: bold; color: #1b5e20; margin-bottom: 6px; border-bottom: 1px dashed #cbdccb; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+
+        /* [炫彩爆分發光字體與徽章樣式] */
+        .reputation-num { transition: all 0.3s ease; }
+        .reputation-num.super-legendary {
+            color: #ffd700 !important;
+            font-weight: 900;
+            text-shadow: 0 0 8px #ffd700, 0 0 15px #ffaa00;
+            animation: pulseText 1.5s infinite alternate;
+        }
+        @keyframes pulseText {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .legend-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            color: #fff;
+            padding: 2px 6px;
+            font-size: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 5px;
+            box-shadow: 0 0 5px #ffd700;
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-3px); }
+        }
 
         .credits-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0c0a09; color: #e7e5e4; z-index: 2000; overflow: hidden; }
         .credits-container { position: absolute; width: 100%; top: 100%; animation: scrollCredits 28s linear forwards; text-align: center; padding-bottom: 120px; }
@@ -186,16 +215,43 @@
             heritage: "https://i.imgs.ovh/2026/07/10/796b0bfe36c68e2a9eb559485723fbf9.png"      
         };
 
-        // 阿草提示庫
+        // 阿草【硬核非遺科普】暖心手記數據庫（拒絕敷衍！）
         const fairyHints = {
-            "背景導覽": "新老闆，我們的店鋪正要開張呢！打開音樂，看看我們精美的文創海報吧。聲望值很重要，最高是 100% 喔！",
-            "創業任務：採購渠道": "【阿草提示】此時內地進口困難。聯絡上環老牌『南北行』，利用東南亞轉口渠道最穩定安全喔！自己採藥雖然省錢，但產量太少啦！",
-            "創業任務：配置設備": "【阿草提示】『膽形大銅壺』是老字號的標誌。苦茶配涼果，才是最地道的人情味體現！",
-            "1930-1950年代": "【阿草提示】『一仙茶』利潤雖薄，卻是街坊的救命草。流感時期，累積聲望比賺錢更具意義喔！",
-            "1960年代": "【阿草提示】年輕人追求時髦。裝電視太貴，收音機聽廣播劇也是個很有情懷且省錢的選擇呀！",
-            "互動配藥考核": "【阿草提示】熬夜加班的女工姐姐需要清肝降火的【夏枯草/廿四味】。暴曬便秘的搬運工叔叔一定要用潤腸的【火麻仁】！選對銅壺喔！",
-            "1970-1980年代": "【阿草提示】租金加了三倍！大膽把涼茶做成雪糕（A）吧，這是我們最重要的創意！或者做成外賣顆粒（B）打破鋪位限制。",
-            "2020s 現代香港": "【阿草提示】非遺的核心是順應節氣的智慧。與學校合作舉辦草本教育工作坊也是非常棒的傳承！"
+            "背景導覽": "新老闆，我們的店鋪正要開張呢！打開音樂，看看我們精美的文創海報吧。每一步經營規劃都會影響街坊對我們的信任度（聲望）哦！我們的目標是讓非遺文化世世代代傳承下去！",
+            "創業任務：採購渠道": "【阿草非遺講堂】1940年代末期，韓戰爆發導致禁運，內地中藥無法直接輸入香港！為了讓舖子開張，上環老牌『南北行』利用東南亞（泰國、星馬）的轉口渠道，確保了香港中草藥的命脈。選南北行轉口最穩健；如果圖便宜買黑市私商藥材，極易買到霉變或有毒的『斷腸草』，違背了中醫藥『醫者仁心』的安全底線哦！而親自採藥產量極少，根本無法維持日常開店營業！",
+            "創業任務：配置設備": "【阿草本草手記】涼茶舖的靈魂就是大銅壺。閃閃發亮的『膽形大銅壺』不僅保溫，更是老字號誠信經營的『視覺招牌』！苦茶苦澀難耐，在堂飲完畢後，掌櫃主動遞上一顆免費的酸甜涼果，更是嶺南地區獨有的人情味體現，建立了極佳的社區溫馨感！",
+            "1930-1950年代": "【阿草歷史課】在動盪困頓的50年代，白米一磅才一毫。濟安堂堅持『一仙水碗茶』，不因金銀花等中藥暴漲而加價，將涼茶化為平民百姓的『平價預防針』。這完美體現了老香港街坊鄰里間『守望相助、同舟共濟』的獅子山精神，這份社區守護價值，正是非遺文化最溫暖的內涵！",
+            "1960年代": "【阿草社會觀察】60年代香港工業起飛，電視機在當時是奢侈品！購置一台電視機或投幣點唱機，能讓買不起電視的市民花一毫子買碗茶就能看一整晚，將涼茶舖打造成熱鬧的『貧民夜總會』，成為鄰里日常社交的溫馨紐帶！如果用收音機聽天空小說（廣播劇），則能以低成本凝聚老街坊，人情味拉滿！",
+            "互動配藥考核": "【阿草本草講堂】女工姐姐經常熬夜、口苦、目赤、生口瘡，在中醫這屬於『肝火上炎』，大苦大寒的【夏枯草/廿四味】能入肝經，清熱解毒、消腫散結，正對症下藥！而碼頭搬運工人因烈日暴曬，水分蒸發導致『腸燥津虧』而便秘，【火麻仁】富含植物油脂，能潤燥通便而不傷正氣。如果給他喝極寒的廿四味，反而會大傷他的脾胃氣血，越喝越虛喔！",
+            "1970-1980年代": "【阿草文創講堂】70年代西方碳酸汽水和西式雪糕席捲香港，傳統熱涼茶被年輕人斥為『老土、苦澀』，包租婆甚至要把租金加三倍！大膽將苦澀的廿八味與甜美的西式冰淇淋跨界結合，推出『草本涼茶雪糕』，這不僅是商業自救，更是香港『中西合璧、敢於創新』文化包容力的極致體現！",
+            "2020s 現代香港": "【阿草非遺傳承】涼茶入選國家級非遺的核心，是先賢順應嶺南水土、因應二十四節氣防病強身的『有關自然界和宇宙的知識與實踐』。堅持文化底蘊教育（A），或者走入學校（B）舉辦體驗工作坊讓中學生親手配藥，才是『活性傳承』的最高境界，絕非空洞的網紅打卡可比擬！"
+        };
+
+        // 懸停/觸摸選項時，阿草進行即時、深度的科普分析 (Hover Auto-Hint)
+        const optionHoverTexts = {
+            // 第一關
+            "A_buy": "「阿草科普：1940年代末韓戰爆發，聯合國對內地禁運。幸好上環『南北行』利用與東南亞的貿易網絡轉口中藥材，挽救了香港的草藥荒。這體現了嶺南中藥網絡強大的韌性與商譽，這才是非遺的根基！」",
+            "B_buy": "「阿草警告：散商藥材沒有經過『南北行』或藥商公會檢驗。在動盪年代，黑市草藥極易摻雜霉變雜草，甚至混入有毒的『斷腸草』。為節省成本而忽視安全，嚴重違背了『醫者仁心』的安全底線！」",
+            "C_buy": "「阿草分析：雖然採摘大帽山野生草藥零成本、夠天然，但採集產量極不穩定，根本無法支持日常開店。更重要的是，普通人極易採錯相似的毒草，非遺涼茶必須依賴專業化、安全的產業鏈！」",
+            // 配置
+            "A_equip": "「阿草本草手記：『膽形大銅壺』是老字號的標誌。苦茶配涼果，更是嶺南水土特有的人情味體現，能極大地累積顧客口碑與商譽！」",
+            "B_equip": "「阿草嘆嘆氣：便宜玻璃杯缺乏店鋪招牌形象，不提供附屬涼果更是嚴重違反當時市民的消費習慣，大家喝了苦茶嘴巴很難受，店舖聲望會受打擊哦。」",
+            // 50年代
+            "A_50s": "「阿草溫馨手記：在50年代，白米一磅才一毫。堅持『一仙茶』不加價，雖然虧本，卻為貧苦大眾提供了最基礎的醫療保障，完美弘揚了香港『同舟共濟、守望相助』的社會價值觀！」",
+            "B_50s": "「阿草嘆息：雖然提價能保證店鋪在流感期間獲得高利潤，但當時涼茶是窮苦百姓的預防針，大幅加價會讓生病的工友無法喝茶，這違背了醫德，會嚴重流失人心！」",
+            "C_50s": "「阿草讚嘆：愛心瓷罐在香港歷史悠久！這利用了社區共生效應，讓有錢的街坊捐款資助失業工友免費喝茶，完美體現了香港人仁愛互助的偉大精神！」",
+            // 60年代
+            "A_60s": "「阿草科普：電視在當時是奢侈品！提供黑白電視與點唱機，讓街坊只要花一毫買碗茶就能看一整晚，這種『貧民夜總會』是香港最有人情味的市井情懷，能吸引無數摩登青年聚會！」",
+            "B_60s": "「阿草科普：裝設收音機聽李我天空小說（廣播劇），是當時中小型涼茶舖極具智慧的低成本方案，聲音傳播拉近了鄰里距離，充滿了港式社區的人情味！」",
+            "C_60s": "「阿草搖搖頭：別家店都在用新潮設備吸引年輕人，如果我們繼續一成不變、死氣沉沉，年輕客群很快就會流失殆盡，生意會被冰室搶走。」",
+            // 70年代
+            "A_70s": "「阿草點讚：太妙了！70年代西方汽水與雪糕橫行，傳統熱涼茶被斥為老土。將廿八味與甜美雪糕跨界結合，是香港『中西合璧、敢於創新』文化包容力的極致展現！這就是非遺的活性傳承！」",
+            "B_70s": "「阿草分析：與中藥廠合作研發方便外賣的顆粒沖劑，能讓觀塘、荃灣等工業區忙碌加班的打工仔隨時沖泡，成功打破了實體舖的昂貴租金和地理限制！」",
+            "C_70s": "「阿草嘆氣：不改包裝也不改菜單，在原地苦撐是敵不過地產黃金時代的昂貴租金的，店舖將面臨被迫結業、非遺遺失的悲慘下場！」",
+            // 2020s
+            "A_modern": "「阿草總結：涼茶非遺的核心，是先人因應二十四節氣的『自然界和宇宙的知識與實踐』。堅持推廣天人合一、防病強身的草本養生手冊，是守護非遺底蘊的最高境界！」",
+            "B_modern": "「阿草開心地轉圈：走入校園（如邱子田紀念中學）舉辦非遺工作坊，讓中學生觸摸草藥、親手配五花茶，將智慧活態傳遞給下一代，這才是最了不起的薪火相傳！」",
+            "C_modern": "「阿草憂心忡忡：一味迎合網紅拍照、淡化中草藥養生理論，雖然短期內能賺快錢，但久而久之會讓非遺丟失文化靈魂，徹底淪為普通的空洞噱頭飲料。」"
         };
 
         let lastEraImg = IMAGES.cover;
@@ -227,14 +283,24 @@
             } catch(e) {}
         }
 
-        // UI 與數值更新
+        // UI 與數值更新（支持超越100%爆分炫彩發光機制）
         function updateUI() {
-            if (reputation > 100) reputation = 100;
             if (reputation < 0) reputation = 0;
             
             let repColor = reputation > 60 ? '#4caf50' : reputation > 30 ? '#ff9800' : '#f44336';
             let totalBadges = Object.keys(unlockedBadges).length;
             document.getElementById('collection-rate').innerText = `解鎖進度: ${Math.round((totalBadges/6)*100)}%`;
+
+            // 爆分特效：若聲望值超越 100%，字體變金、閃爍，加入爆分徽章
+            let reputationHTML = "";
+            if (reputation > 100) {
+                reputationHTML = `<span class="reputation-num super-legendary">${reputation}%</span><span class="legend-badge">🌟 爆分傳承！</span>`;
+            } else {
+                reputationHTML = `<span class="reputation-num">${reputation}%</span>`;
+            }
+
+            // 進度條長度：上限安全限制在 100% 滿格，防止進度條爆框
+            let progressPercentage = Math.min(reputation, 100);
 
             return `
                 <div class="status-container">
@@ -245,8 +311,8 @@
                             <div class="progress-bg"><div class="progress-fill" style="width:${Math.min(money/10, 100)}%; background:#2e7d32;"></div></div>
                         </div>
                         <div class="stat-item">
-                            <span>❤️ 店鋪聲望: ${reputation}%</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width:${reputation}%; background:${repColor};"></div></div>
+                            <span>❤️ 店鋪聲望: ${reputationHTML}</span>
+                            <div class="progress-bg"><div class="progress-fill" style="width:${progressPercentage}%; background:${repColor};"></div></div>
                         </div>
                     </div>
                 </div>`;
@@ -260,7 +326,23 @@
             bubble.style.display = 'block'; // 100% 自動彈出
 
             let imageSection = `<div class="image-stage" style="background: url('${lastEraImg}')"></div>`;
-            gameBox.innerHTML = updateUI() + imageSection + text + choices.map(c => `<button onclick="${c.action}">${c.text}</button>`).join('');
+            
+            // 構建按鈕 HTML，將滑鼠懸停 (onmouseover) 與手機點擊觸摸 (ontouchstart) 的事件綁定進去
+            let buttonsHTML = choices.map(c => {
+                let hoverAttr = c.hoverKey ? `onmouseover="showFairyHover('${c.hoverKey}')" ontouchstart="showFairyHover('${c.hoverKey}')"` : "";
+                return `<button ${hoverAttr} onclick="${c.action}">${c.text}</button>`;
+            }).join('');
+
+            gameBox.innerHTML = updateUI() + imageSection + text + buttonsHTML;
+        }
+
+        // 當滑鼠移上去或手指碰觸時，阿草立刻跳出來科普！
+        function showFairyHover(key) {
+            if (optionHoverTexts[key]) {
+                const bubble = document.getElementById('fairyBubble');
+                document.getElementById('fairyHintText').innerHTML = optionHoverTexts[key];
+                bubble.style.display = 'block';
+            }
         }
 
         // 阿草對話框手動開關
@@ -282,73 +364,113 @@
             [{ text: "🎵 開啟音樂並規劃店鋪", action: "initAudio(); build_shop_q1();" }]);
         }
 
-        // 第一關：採購
+        // 第一關：採購（歷史事實修正 + 新增 A、B、C 三個選項）
         function build_shop_q1() {
             currentEra = "創業任務：採購渠道";
             lastEraImg = IMAGES.shanghai_street;
-            render(`<h3>【任務一：規劃戰後草藥安全進口渠道】</h3><p>此時內地直接貿易受阻，為了確保藥材品質與穩定，你會如何選擇？</p>`, [
-                { text: "🗺️ 策略 A：聯絡上環「南北行」，透過東南亞轉口渠道進口優質藥材。", action: "build_shop_r1('A')" },
-                { text: "🪵 策略 B：採購便宜但來源不明的黑市散裝藥材（高風險）。", action: "build_shop_r1('B')" },
-                { text: "⛰️ 策略 C：親自前往新界山頭採摘野生草藥（零成本，產量低）。", action: "build_shop_r1('C')" }
+            render(`<h3>【任務一：規劃戰後草藥安全進口渠道】</h3><p style="text-align:justify;">1940年代末期韓戰爆發，內地直接進口完全被阻。為了確保店內藥材品質與安全，作為掌櫃，你該採取哪種商業採購策略？</p>`, [
+                { text: "🗺️ 策略 A：聯絡上環老牌「南北行」，透過東南亞（泰國、星馬）的轉口渠道，進口品質穩定的草藥。", action: "build_shop_r1('A')", hoverKey: "A_buy" },
+                { text: "🪵 策略 B：向街頭來歷不明的散商採購便宜的一手黑市草藥，節省開業成本。", action: "build_shop_r1('B')", hoverKey: "B_buy" },
+                { text: "⛰️ 策略 C：親自前往新界山頭（如大帽山）採摘野生草藥，減少原料開支。", action: "build_shop_r1('C')", hoverKey: "C_buy" }
             ]);
         }
 
         function build_shop_r1(type) {
-            if(type === 'A') { money -= 100; reputation += 20; unlockedBadges['b-agent'] = true; document.getElementById('b-agent').classList.add('unlocked'); }
-            else if(type === 'B') { money -= 20; reputation -= 20; playBeep('fail'); }
-            else { money -= 0; reputation += 5; }
-            build_shop_q2();
+            let txt = "";
+            if(type === 'A') { 
+                money -= 100; reputation += 20; unlockedBadges['b-agent'] = true; document.getElementById('b-agent').classList.add('unlocked');
+                txt = `<h3>👍 南北行渠道對接成功！</h3><p class="funny-alert">雖然轉口中藥價格高昂，但品質上乘，濟安堂戰後第一炮順利打響！解鎖【南北行與轉口港】圖鑑！</p>`;
+            }
+            else if(type === 'B') { 
+                money -= 20; reputation -= 20; playBeep('fail'); 
+                txt = `<h3>❌ 遭遇嚴重的霉變草藥！</h3><p class="funny-alert">黑市草藥受潮長霉，差點引起食安事件，街坊鄰里對我們大失所望，商譽受到了沉重打擊！</p>`;
+            }
+            else { 
+                money -= 0; reputation += 5; 
+                txt = `<h3>⛰️ 踏實採摘野生草藥</h3><p class="funny-alert">雖然不花本錢，但產量遠遠跟不上店鋪需求，採藥過程更是極耗體力，店鋪僅能勉強維持開張。</p>`;
+            }
+            render(txt, [{ text: "⏩ 進行店面設備配置任務", action: "build_shop_q2()" }]);
         }
 
         function build_shop_q2() {
             currentEra = "創業任務：配置設備";
             lastEraImg = IMAGES.old_shop;
-            render(`<h3>【任務二：購置涼茶舖形象靈魂】</h3><p>招牌形象至關重要，你會購置大銅壺還是玻璃杯？</p>`, [
-                { text: "🏺 配置 A：高價膽形大銅壺與免費涼果（人情味）。", action: "build_shop_r2(true)" },
-                { text: "🥛 配置 B：便宜玻璃杯，不提供涼果。", action: "build_shop_r2(false)" }
+            render(`<h3>【任務二：購置涼茶舖形象靈魂】</h3><p>效仿第一家廣東著名涼茶老店的規矩。你如何配置店內的核心形象與服務設施？</p>`, [
+                { text: "🏺 配置 A：高價膽形大銅壺與免費涼果（清熱解苦，人情味十足）。", action: "build_shop_r2(true)", hoverKey: "A_equip" },
+                { text: "🥛 配置 B：便宜普通玻璃杯，不提供解苦涼果。", action: "build_shop_r2(false)", hoverKey: "B_equip" }
             ]);
         }
 
         function build_shop_r2(ok) {
-            if(ok) { money -= 120; reputation += 20; unlockedBadges['b-copper'] = true; document.getElementById('b-copper').classList.add('unlocked'); }
-            else { money -= 30; reputation -= 15; }
-            triggerEra50s();
+            let txt = "";
+            if(ok) { 
+                money -= 120; reputation += 20; unlockedBadges['b-copper'] = true; document.getElementById('b-copper').classList.add('unlocked'); 
+                txt = `<h3>🏺 大銅壺購入成功！</h3><p class="funny-alert">金光閃閃的大銅壺擦得一塵不染，堂飲完畢送上一顆酸甜的山楂涼果解苦，街坊讚歎大方！解鎖【膽形大銅壺】！</p>`;
+            }
+            else { 
+                money -= 30; reputation -= 15; playBeep('fail');
+                txt = `<h3>🥛 開業氣氛十分冷清</h3><p class="funny-alert">沒有招牌大銅壺引人矚目，喝完苦茶後又沒有涼果解苦，極度違反街坊的消費習慣，回頭客寥寥無幾。</p>`;
+            }
+            render(txt, [{ text: "🎉 店鋪落成！開啟戰後歷史事件", action: "triggerEra50s()" }]);
         }
 
-        // 第二關：50年代（流感抉擇）
+        // 第二關：50年代（一仙水碗茶與流感爆發，增加選項 C）
         function triggerEra50s() {
             currentEra = "1930-1950年代";
             lastEraImg = IMAGES.water_tea;
-            render(`<h3>🛒 歷史事件：一仙水碗茶與流感爆發</h3><p>50年代金銀花價格暴漲，街坊卻無錢求醫。面對高成本，你如何決定？</p>`, [
-                { text: "🤝 A：堅持「一仙茶」不加價，虧本與街坊共渡難關。", action: "handle50s('A')" },
-                { text: "💰 B：隨市場提價，優先保證店鋪高額利潤。", action: "handle50s('B')" },
-                { text: "🪙 C：推行義贈派茶時段，設立店內捐款瓷罐平衡成本。", action: "handle50s('C')" }
+            render(`<h3>🛒 歷史事件：一仙水碗茶與流感爆發</h3><p style="text-align:justify;">50年代香港基層極其貧苦，隨後春季流感爆發。金銀花等中藥成本一日暴漲三倍。前來求助的街坊工友絡繹不絕，面對高昂的中草藥成本，你如何抉擇？</p>`, [
+                { text: "🤝 A：堅持「一仙水碗茶」絕不加價，虧本與貧苦街坊風雨同舟。", action: "handle50s('A')", hoverKey: "A_50s" },
+                { text: "💰 B：隨市場成本大幅加價，優先保證店鋪在商言商的高利潤。", action: "handle50s('B')", hoverKey: "B_50s" },
+                { text: "🪙 C：不加價，但實行義贈派茶時段，在店門設立「捐款愛心瓷罐」，由有能力的富街坊合力支持。", action: "handle50s('C')", hoverKey: "C_50s" }
             ]);
         }
 
         function handle50s(type) {
-            if(type === 'A') { money -= 100; reputation += 25; unlockedBadges['b-penny'] = true; document.getElementById('b-penny').classList.add('unlocked'); }
-            else if(type === 'B') { money += 150; reputation -= 25; playBeep('fail'); }
-            else { money -= 30; reputation += 15; }
-            render(`<p class="funny-alert">處理完畢！即將進入涼茶掌櫃診症考核。</p>`, [{ text: "⏩ 進入診症挑戰", action: "startRecommendStage()" }]);
+            let txt = "";
+            if(type === 'A') { 
+                money -= 100; reputation += 25; unlockedBadges['b-penny'] = true; document.getElementById('b-penny').classList.add('unlocked'); 
+                txt = `<h3>❤️ 醫者仁心，感動天地！</h3><p class="funny-alert">一仙涼茶保住了基層工友的生命底線！街坊親切地尊稱你為『濟安大善人』，濟安堂聲望爆棚！解鎖【一仙水碗茶】！</p>`;
+            }
+            else if(type === 'B') { 
+                money += 150; reputation -= 25; playBeep('fail'); 
+                txt = `<h3>❌ 唯利是圖，商譽重挫！</h3><p class="funny-alert">昂貴的價格把無錢看醫生的貧苦百姓拒之門外，店鋪被市民指責為『無良奸商』，聲望急劇下跌！</p>`;
+            }
+            else { 
+                money -= 30; reputation += 15; 
+                txt = `<h3>🪙 社區共生，智慧互助！</h3><p class="funny-alert">愛心瓷罐收到了大批熱心街坊的捐贈，既解決了基層喝茶防病的問題，也極好地分擔了小店的材料成本！</p>`;
+            }
+            render(txt, [{ text: "⏩ 進入涼茶掌櫃診症推薦考核", action: "startRecommendStage()" }]);
         }
 
-        // 診症單選推薦
+        // 特別考核關卡：大銅壺單選診症推薦玩法（本草醫理科普）
         function startRecommendStage() {
             currentEra = "互動配藥考核";
             selectedPot = null;
             const scenario = [
-                { title: "紡織加班女工", desc: "口苦、肝火盛、熬夜眼乾，推薦哪款？", correct: "A", img: IMAGES.xiakucao },
-                { title: "碼頭工人", desc: "暴曬整天，喉嚨乾涸且便秘嚴重，推薦哪款？", correct: "C", img: IMAGES.huomaren }
+                { title: "紡織加班女工", desc: "「掌櫃，我最近在紗廠經常熬夜開夜車，口苦、眼睛乾澀、還長了很多口瘡，肝火盛得很，該喝什麼？」", correct: "A", img: IMAGES.xiakucao },
+                { title: "碼頭工人", desc: "「掌櫃，我在碼頭烈日下暴曬整天，全身發熱，喉嚨乾涸，肚子脹得很，還燥熱便秘拉不出，該喝什麼？」", correct: "C", img: IMAGES.huomaren }
             ][currentPatientScenario];
 
-            let html = `<h3>掌櫃診症：${scenario.title}</h3><p style="color:#0d47a1;">💬 訴求：${scenario.desc}</p>
+            let html = `<h3>掌櫃診症：第 ${currentPatientScenario + 1} 位顧客（${scenario.title}）</h3><p style="color:#0d47a1;"><b>💬 訴求：</b>${scenario.desc}</p>
+            <p style="font-size:12px; font-weight:bold; color:var(--primary-color);">請把滑鼠移到或觸摸銅壺，聽聽阿草的科普建議，並點擊大銅壺進行「單選對症下藥」：</p>
             <div class="pot-panel">
-                <div class="pot-option" id="potA" onclick="selectPot('A')"><span class="pot-icon">🏺</span>夏枯草/廿四味</div>
-                <div class="pot-option" id="potB" onclick="selectPot('B')"><span class="pot-icon">🏺</span>五花茶/銀菊露</div>
-                <div class="pot-option" id="potC" onclick="selectPot('C')"><span class="pot-icon">🏺</span>火麻仁</div>
+                <div class="pot-option" id="potA" onmouseover="showFairyHover('twentyfour_pot')" ontouchstart="showFairyHover('twentyfour_pot')" onclick="selectPot('A')">
+                    <span class="pot-icon">🏺</span>夏枯草 / 廿四味
+                </div>
+                <div class="pot-option" id="potB" onmouseover="showFairyHover('fiveflower_pot')" ontouchstart="showFairyHover('fiveflower_pot')" onclick="selectPot('B')">
+                    <span class="pot-icon">🏺</span>五花茶 / 銀菊露
+                </div>
+                <div class="pot-option" id="potC" onmouseover="showFairyHover('hempseed_pot')" ontouchstart="showFairyHover('hempseed_pot')" onclick="selectPot('C')">
+                    <span class="pot-icon">🏺</span>火麻仁
+                </div>
             </div>`;
-            render(html, [{ text: "奉上涼茶", action: "checkRecommend()" }]);
+
+            // 補充配藥時阿草的即時銅壺懸停科普
+            optionHoverTexts["twentyfour_pot"] = "「阿草本草科普：【廿四味/夏枯草】苦寒降火。女工熬夜肝火盛、目赤口苦，正需要它來清熱瀉火、消腫散結。這叫對症下藥！」";
+            optionHoverTexts["fiveflower_pot"] = "「阿草本草科普：【五花茶/銀菊露】甘涼祛濕，專治微熱感冒和輕微喉痛。對於嚴重的熬夜肝火旺、或者烈日暴曬燥結通便，功效稍顯不足。」";
+            optionHoverTexts["hempseed_pot"] = "「阿草本草科普：【火麻仁】性平，富含植物油脂，是中醫『潤下通便』的代表藥。暴曬便秘的搬運工腸道燥結，喝它最能滑腸潤燥。若給他喝大苦寒的廿四味，反而會越喝越虛！」";
+
+            render(html, [{ text: "🏺 奉上大銅壺保溫涼茶給客人", action: "checkRecommend()" }]);
         }
 
         function selectPot(id) {
@@ -358,71 +480,135 @@
         }
 
         function checkRecommend() {
-            if(!selectedPot) return alert("請先選擇涼茶！");
+            if(!selectedPot) return alert("請先選擇大銅壺涼茶！");
             const sc = [ {correct: "A", img: IMAGES.xiakucao}, {correct: "C", img: IMAGES.huomaren} ][currentPatientScenario];
-            if(selectedPot === sc.correct) { reputation += 15; money += 50; lastEraImg = sc.img; playBeep('success'); }
-            else { reputation -= 15; playBeep('fail'); }
+            let txt = "";
+            if(selectedPot === sc.correct) { 
+                reputation += 15; money += 50; lastEraImg = sc.img; playBeep('success'); 
+                txt = `<h3>👍 對症推薦成功，藥到病除！</h3><p class="funny-alert">你的專業本草學問贏得了整條街坊的信心！聲望 +15，店鋪利潤 +$50！</p>`;
+            }
+            else { 
+                reputation -= 15; playBeep('fail'); 
+                txt = `<h3>❌ 藥不對症，砸了招牌！</h3><p class="funny-alert">客人喝了藥不對症的涼茶脾胃受寒，口瘡甚至加劇，店鋪聲望大跌 15 點！</p>`;
+            }
             
             currentPatientScenario++;
-            if(currentPatientScenario < 2) startRecommendStage();
-            else goTo60s();
+            if(currentPatientScenario < 2) render(txt, [{ text: "⏩ 診治下一位顧客", action: "startRecommendStage()" }]);
+            else render(txt, [{ text: "⏩ 邁向 1960 年代社區社交與大眾娛樂轉型", action: "goTo60s()" }]);
         }
 
-        // 1960年代
+        // 第三關：1960年代（大眾娛樂轉型，增加選項 C）
         function goTo60s() {
             currentEra = "1960年代";
             lastEraImg = IMAGES.tv_era;
-            render(`<h3>📺 1960年代：貧民夜總會興起</h3><p>黑白電視極昂貴，店舖需要引進娛樂吸引年輕人，你的選擇是？</p>`, [
-                { text: "📺 A：購置電視與點唱機，將涼茶舖變成社區社交中心。", action: "handle60s('A')" },
-                { text: "📻 B：裝設較便宜的「麗的呼聲」收音機播放廣播劇。", action: "handle60s('B')" },
-                { text: "💬 C：不做任何改變，維持純堂飲老店風格。", action: "handle60s('C')" }
+            render(`<h3>📺 1960年代：電視機與大眾社交轉型</h3><p style="text-align:justify;">60年代西式冰室和汽水湧入，傳統涼茶舖遭到冷落。黑白電視在當時是天價奢侈品，為了將小舖打造成社區的社交與大眾娛樂聚腳點，你該如何規劃？</p>`, [
+                { text: "📺 A：斥巨資購入黑白電視與投幣唱片機，設立舒適卡座，將舖頭打造成社區『貧民夜總會』。", action: "handle60s('A')", hoverKey: "A_60s" },
+                { text: "📻 B：購買價格較親民的「麗的呼聲」收音機廣播，傍晚播放最火的天空小說廣播劇，主打溫情社交。", action: "handle60s('B')", hoverKey: "B_60s" },
+                { text: "💬 C：堅持素雅傳統的老舖風格，拒絕引進電視、廣播等任何娛樂設施。", action: "handle60s('C')", hoverKey: "C_60s" }
             ]);
         }
 
         function handle60s(type) {
-            if(type === 'A') { money -= 150; reputation += 20; unlockedBadges['b-night'] = true; document.getElementById('b-night').classList.add('unlocked'); lastEraImg = IMAGES.tv_crowd; }
-            else if(type === 'B') { money -= 40; reputation += 10; lastEraImg = IMAGES.jukebox; }
-            else { reputation -= 15; lastEraImg = IMAGES.chatting; }
-            goTo70s();
+            let txt = "";
+            if(type === 'A') { 
+                money -= 150; reputation += 20; unlockedBadges['b-night'] = true; document.getElementById('b-night').classList.add('unlocked'); lastEraImg = IMAGES.tv_crowd; 
+                txt = `<h3>🎉 濟安堂『貧民夜總會』全港大火！</h3><p class="funny-alert">每天晚上店裡都擠滿了街坊！年輕人在點唱機旁一邊聽黑膠唱片一邊喝五花茶，店鋪人氣達到全盛！解鎖圖鑑【貧民夜總會】！</p>`;
+            }
+            else if(type === 'B') { 
+                money -= 40; reputation += 10; lastEraImg = IMAGES.jukebox; 
+                txt = `<h3>📻 廣播劇聲響起，溫情洋溢！</h3><p class="funny-alert">每天傍晚廣播劇開播，老街坊們便自備小板凳圍在店門口邊喝邊聽，雖然利潤不多，卻以極低成本維持了溫馨的社區人情味！</p>`;
+            }
+            else { 
+                reputation -= 15; lastEraImg = IMAGES.chatting; 
+                txt = `<h3>🙅 傳統老舖慘遭時代冷落</h3><p class="funny-alert">不願意改裝的舖頭被年輕人嫌棄老土，大家都跑到隔壁有音樂聽、有電視看的冰室去了，客流迅速流失。</p>`;
+            }
+            render(txt, [{ text: "⏩ 邁向 70-80 年代西方飲食衝擊與高租金考驗", action: "goTo70s()" }]);
         }
 
-        // 1970-80s
+        // 第四關：1970-1980年代（西方衝擊與草本涼茶雪糕，保留雪糕核心）
         function goTo70s() {
             currentEra = "1970-1980年代";
             lastEraImg = IMAGES.ice_innovation;
-            render(`<h3>🍦 西方衝擊：包租婆加租與雪糕危機</h3><p>租金加了三倍，且西式雪糕橫行，你如何反擊？</p>`, [
-                { text: "🍦 A：跨界首創「廿八味涼茶雪糕」，實行中西合璧自救！", action: "handle70s('A')" },
-                { text: "🚀 B：將配方製成便利包裝外賣，打破鋪位租金限制。", action: "handle70s('B')" },
-                { text: "🪵 C：固守原地講價，拒絕任何產品變革。", action: "handle70s('C')" }
+            render(`<h3>🍦 西方衝擊：包租婆三倍加租與雪糕危機</h3><p style="text-align:justify;">70-80年代西方快餐與高檔雪糕橫行，傳統水碗熱茶被年輕人斥為老土。此時包租婆趁機獅子大開口，租金直接暴漲三倍！你該如何實施驚人的變革，帶領店舖反擊？</p>`, [
+                { text: "🍦 A：中西交融創新！大膽研發全港首創的「廿八味草本涼茶雪糕」與特調草本紅豆冰自救！", action: "handle70s('A')", hoverKey: "A_70s" },
+                { text: "🚀 B：與本地中藥廠合作，將配方研發為「免煎沖劑顆粒」與外賣杯裝，送往觀塘工廠區，打破店面限制。", action: "handle70s('B')", hoverKey: "B_70s" },
+                { text: "🪵 C：拒絕任何菜單與包裝包裝變革，堅持只賣傳統堂飲熱涼茶，苦撐跟包租婆講價。", action: "handle70s('C')", hoverKey: "C_70s" }
             ]);
         }
 
-        // 2020s 現代傳承
         function handle70s(type) {
-            if(type === 'A') { money += 150; reputation += 15; lastEraImg = IMAGES.herbal_ice; }
-            else if(type === 'B') { money += 80; reputation += 15; unlockedBadges['b-pack'] = true; document.getElementById('b-pack').classList.add('unlocked'); lastEraImg = IMAGES.landlady; }
-            else { money = 0; return triggerGameOver("租金飛漲與客源流失，濟安堂倒閉。"); }
-            goToModern();
+            let txt = "";
+            if(type === 'A') { 
+                money += 150; reputation += 15; lastEraImg = IMAGES.herbal_ice; 
+                txt = `<h3>🍦 草本涼茶雪糕引爆全港！</h3><p class="funny-alert">甜中帶甘的奇妙口感讓全港年輕人排長隊搶購！各大報紙爭相報導，店鋪賺取了極其豐厚的資金，昂貴的鋪租危機迎刃而解！</p>`;
+                render(txt, [{ text: "⏩ 迎戰地產黃金時代的鋪租與包裝工業化轉型", action: "triggerLandladyCrisis()" }]);
+            }
+            else if(type === 'B') { 
+                money += 80; reputation += 15; unlockedBadges['b-pack'] = true; document.getElementById('b-pack').classList.add('unlocked'); lastEraImg = IMAGES.landlady; 
+                txt = `<h3>🚀 沖劑開闢全新戰線！</h3><p class="funny-alert">送往觀塘和荃灣工業區的即沖顆粒深受熬夜加班工廠打工仔喜愛，銷量暴增，成功跳出了店鋪鋪租的物理限制！解鎖圖鑑【現代顆粒沖劑】！</p>`;
+                render(txt, [{ text: "⏩ 迎戰地產黃金時代的鋪租與包裝工業化轉型", action: "triggerLandladyCrisis()" }]);
+            }
+            else { 
+                money = 0; 
+                return triggerGameOver("包租婆堅決不肯減租，拒絕改變的濟安堂因無力承擔天價租金，且沒有年輕客源，宣告結業倒閉。"); 
+            }
         }
 
+        // 地產危機轉折點
+        function triggerLandladyCrisis() {
+            lastEraImg = IMAGES.landlady; 
+            render(`<h3>🏢 包租婆的第二次刁難</h3>
+            <div class="landlady-dialog">
+                <h4>🗝️ 包租婆：</h4><p style="margin:0; font-style:italic;">「地產興旺，下個月舖租再加三倍！交唔起就折埋老字號啦！」</p>
+            </div>
+            <p style="text-align:justify;">隨著新式罐裝、紙包飲料大舉進佔各大新興的 7-Eleven 與超級市場，要避免老舖被時代遺忘，你該採取哪種長遠工業包裝策略？</p>`, [
+                { text: "🚀 現代化：斥資與本地大型食品廠合作，將濟安堂配方製成「免煎沖劑顆粒」與便利「瓶裝涼茶」，進軍各大便利店，跳出實體舖租金限制！", action: "handleRentResult(true)", hoverKey: "B_70s" },
+                { text: "🪵 守舊：拒絕任何工業顆粒或便利瓶裝改良，在原地苦苦支撐。", action: "handleRentResult(false)", hoverKey: "C_70s" }
+            ]);
+        }
+
+        function handleRentResult(isModern) {
+            if(isModern) { 
+                money -= 200; reputation += 30; unlockedBadges['b-pack'] = true; document.getElementById('b-pack').classList.add('unlocked'); 
+                render(`<p class="funny-alert">✊ 絕處逢生！成功將濟安堂科學化、現代化，瓶裝與顆粒沖劑大賣，徹底打破了實體舖鋪租的枷鎖！</p>`, [{ text: "⏩ 穿越至 2020s 現代非遺活化時代", action: "goToModern()" }]); 
+            }
+            else { 
+                money = 0; playBeep('fail'); 
+                render(`<p class="funny-alert">💀 百年老字號遺憾宣告結業！在寸土寸金的地產大爆發時代，固步自封無法承擔瘋狂暴漲的舖租！</p>`, [{ text: "🍁 時代巨輪·遺憾清盤 (點擊重試)", action: "showIntro()" }]); 
+            }
+        }
+
+        // 第五關：2020s 現代傳承（非遺活化，增加選項 B 邱子田紀念中學合作）
         function goToModern() {
             currentEra = "2020s 現代香港";
             lastEraImg = IMAGES.heritage;
-            render(`<h3>🏛️ 現代香港：非物質文化遺產傳承</h3><p>作為新一代繼承人，你如何活化非遺品牌？</p>`, [
-                { text: "📜 A：守護底蘊：推廣順應節氣的「自然與宇宙知識」。", action: "endGame('A')" },
-                { text: "🏫 B：進入校園：與中學合作舉辦「非遺草本體驗工作坊」。", action: "endGame('B')" },
-                { text: "📸 C：網紅化：只做精美包裝打卡，淡化中醫藥本質。", action: "endGame('C')" }
+            render(`<h3>🏛️ 現代香港：國家級非物質文化遺產</h3>
+            <p style="text-align:justify;">國家正式將涼茶列入首批非物質文化遺產名錄！作為新一代的濟安堂掌櫃，為了讓大家明白涼茶是『有關自然界和宇宙的知識與實踐』的民間養生實踐，你如何活化品牌？</p>`, [
+                { text: "📜 方案 A：守護文化底蘊：將二十四節氣與因應四時變遷防病的中草藥智慧，製成精美養生手冊，重塑非遺的實踐本質。", action: "endGame('A')", hoverKey: "A_modern" },
+                { text: "🏫 方案 B：進入學校：與東華三院邱子田紀念中學合作，舉辦『非遺草本體驗工作坊』與『掌櫃體驗』，讓下一代親手辨藥、配茶。", action: "endGame('B')", hoverKey: "B_modern" },
+                { text: "📸 方案 C：網紅化改造：淡化傳統中醫理論，推出高顏值、適合打卡的網紅特調氣泡涼茶，將店舖改裝為純文青風。", action: "endGame('C')", hoverKey: "C_modern" }
             ]);
         }
 
         function endGame(type) {
-            if(type === 'A' || type === 'B') { reputation += 25; unlockedBadges['b-concept'] = true; document.getElementById('b-concept').classList.add('unlocked'); }
-            else { reputation -= 20; playBeep('fail'); }
+            if(type === 'A' || type === 'B') { 
+                reputation += 25; unlockedBadges['b-concept'] = true; document.getElementById('b-concept').classList.add('unlocked'); 
+            }
+            else { 
+                reputation -= 20; playBeep('fail'); 
+            }
 
             let eval = reputation >= 85 ? "👑 國家級非遺傳承大宗師" : reputation >= 60 ? "📜 涼茶文化守護者" : "⚒️ 涼茶業資深匠人";
+            
+            // 爆分成就判斷
+            let scoreComment = reputation > 100 
+                ? `<span style="color:#ffd700; font-weight:bold; text-shadow:0 0 5px #ffd700;">🌟 超越歷史！解鎖隱藏爆分大滿貫成就！</span>`
+                : `傳承者，你做得很棒！`;
+
             let txt = `<h3>通關圓滿：${eval}</h3>
-            <p style="font-size:20px; color:#e65100;">🌟 最終聲望：${reputation}% | 💰 最終資產：$${money}</p>
-            <div class="encyclopedia"><strong>🎓 汪、李同學與馮老師叮囑：</strong><br>涼茶非遺是古老智慧的實踐，堅守底蘊才能讓品牌活化傳世。</div>`;
+            <p style="font-size:20px; color:#e65100; font-weight:bold;">🌟 最終聲望：${reputation}% | 💰 最終資產：$${money}</p>
+            <p style="font-size:13px; margin: 5px 0;">${scoreComment}</p>
+            <div class="encyclopedia"><strong>🎓 汪靖琦、李卓穎同學與馮皓琳老師專題叮囑：</strong><br>香港非遺涼茶強調的是人與大自然和諧共處、預防大於治療的古老智慧。唯有堅守中醫底蘊與教育傳承，老字號方能具備歷久彌新的文創生命力。</div>`;
             render(txt, [{ text: "🎬 開啟謝幕盛典", action: "showCreditsScreen()" }]);
         }
 
