@@ -2,7 +2,7 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <title>非物質文化遺產：涼茶舖經營大亨 (傳承典藏版 5.0)</title>
+    <title>非物質文化遺產：涼茶舖經營大亨 (傳承典藏版 5.1)</title>
     <style>
         /* [完全保留你原始的佈局與顏色設定] */
         :root { --primary-color: #5d4037; --bg-color: #efebe9; --neon-color: #ff1100; }
@@ -56,12 +56,14 @@
             border-radius: 50%; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.35); 
             animation: floatFairy 3s ease-in-out infinite; 
+            position: relative;
         }
         @keyframes floatFairy { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
         .fairy-avatar::after { content: '💡暖心提示'; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #2e7d32; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 1px solid white; white-space: nowrap; }
         .fairy-bubble { display: none; position: absolute; bottom: 85px; right: 5px; width: 240px; background: #ffffff; border: 2px solid #4caf50; border-radius: 12px; padding: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-size: 13px; text-align: left; line-height: 1.6; color: #2d5a2f; }
         .fairy-bubble::after { content: ''; position: absolute; bottom: -10px; right: 30px; border-width: 10px 10px 0; border-style: solid; border-color: #4caf50 transparent; }
-        
+        .fairy-bubble-title { font-weight: bold; color: #1b5e20; margin-bottom: 6px; border-bottom: 1px dashed #cbdccb; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+
         .credits-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0c0a09; color: #e7e5e4; z-index: 2000; overflow: hidden; }
         .credits-container { position: absolute; width: 100%; top: 100%; animation: scrollCredits 28s linear forwards; text-align: center; padding-bottom: 120px; }
         @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -150%; } }
@@ -87,7 +89,7 @@
 
     <div class="game-container">
         <div class="audio-control-bar">
-            <span>🎵 濟安堂電台：<span id="music-status">音訊加載完畢 (點擊開啟)</span></span>
+            <span>🎵 濟安堂電台：<span id="music-status">音訊加載完畢 (請點擊開啟)</span></span>
             <button class="mute-btn" onclick="toggleMute()">開關音樂</button>
         </div>
 
@@ -184,7 +186,7 @@
             heritage: "https://i.imgs.ovh/2026/07/10/796b0bfe36c68e2a9eb559485723fbf9.png"      
         };
 
-        // 更新後的阿草提示（配合新選項）
+        // 阿草提示庫
         const fairyHints = {
             "背景導覽": "新老闆，我們的店鋪正要開張呢！打開音樂，看看我們精美的文創海報吧。聲望值很重要，最高是 100% 喔！",
             "創業任務：採購渠道": "【阿草提示】此時內地進口困難。聯絡上環老牌『南北行』，利用東南亞轉口渠道最穩定安全喔！自己採藥雖然省錢，但產量太少啦！",
@@ -193,7 +195,7 @@
             "1960年代": "【阿草提示】年輕人追求時髦。裝電視太貴，收音機聽廣播劇也是個很有情懷且省錢的選擇呀！",
             "互動配藥考核": "【阿草提示】熬夜加班的女工姐姐需要清肝降火的【夏枯草/廿四味】。暴曬便秘的搬運工叔叔一定要用潤腸的【火麻仁】！選對銅壺喔！",
             "1970-1980年代": "【阿草提示】租金加了三倍！大膽把涼茶做成雪糕（A）吧，這是我們最重要的創意！或者做成外賣顆粒（B）打破鋪位限制。",
-            "2020s 現代香港": "【阿草提示】非遺的核心是順應節氣的智慧。選 A 守護文化，或選 B 進校園傳承，都是深入傳承的好決策！"
+            "2020s 現代香港": "【阿草提示】非遺的核心是順應節氣的智慧。與學校合作舉辦草本教育工作坊也是非常棒的傳承！"
         };
 
         let lastEraImg = IMAGES.cover;
@@ -225,7 +227,7 @@
             } catch(e) {}
         }
 
-        // UI 與數值更新（不爆分機制）
+        // UI 與數值更新
         function updateUI() {
             if (reputation > 100) reputation = 100;
             if (reputation < 0) reputation = 0;
@@ -250,19 +252,28 @@
                 </div>`;
         }
 
+        // 核心渲染：當進入新關卡時，自動更新並彈出阿草對話框！
         function render(text, choices) {
-            document.getElementById('fairyBubble').style.display = 'none';
+            // 自動開啟並更新阿草的最新提示！
+            const bubble = document.getElementById('fairyBubble');
+            document.getElementById('fairyHintText').innerHTML = fairyHints[currentEra] || "傳承非遺，用心經營！";
+            bubble.style.display = 'block'; // 100% 自動彈出
+
             let imageSection = `<div class="image-stage" style="background: url('${lastEraImg}')"></div>`;
             gameBox.innerHTML = updateUI() + imageSection + text + choices.map(c => `<button onclick="${c.action}">${c.text}</button>`).join('');
         }
 
-        // 阿草對話框
+        // 阿草對話框手動開關
         function toggleFairyBubble(event) {
             event.stopPropagation();
             const bubble = document.getElementById('fairyBubble');
             document.getElementById('fairyHintText').innerHTML = fairyHints[currentEra] || "傳承非遺，用心經營！";
             bubble.style.display = bubble.style.display === 'block' ? 'none' : 'block';
         }
+
+        document.addEventListener('click', function() {
+            document.getElementById('fairyBubble').style.display = 'none';
+        });
 
         // 核心流程
         function showIntro() {
@@ -271,7 +282,7 @@
             [{ text: "🎵 開啟音樂並規劃店鋪", action: "initAudio(); build_shop_q1();" }]);
         }
 
-        // 第一關：採購（增加至 3 選項）
+        // 第一關：採購
         function build_shop_q1() {
             currentEra = "創業任務：採購渠道";
             lastEraImg = IMAGES.shanghai_street;
@@ -322,7 +333,7 @@
             render(`<p class="funny-alert">處理完畢！即將進入涼茶掌櫃診症考核。</p>`, [{ text: "⏩ 進入診症挑戰", action: "startRecommendStage()" }]);
         }
 
-        // 【新功能：推薦飲用單選機制】
+        // 診症單選推薦
         function startRecommendStage() {
             currentEra = "互動配藥考核";
             selectedPot = null;
@@ -357,7 +368,7 @@
             else goTo60s();
         }
 
-        // 1960年代（增加收音機選項）
+        // 1960年代
         function goTo60s() {
             currentEra = "1960年代";
             lastEraImg = IMAGES.tv_era;
@@ -375,7 +386,7 @@
             goTo70s();
         }
 
-        // 1970-80s（保留涼茶雪糕核心）
+        // 1970-80s
         function goTo70s() {
             currentEra = "1970-1980年代";
             lastEraImg = IMAGES.ice_innovation;
@@ -386,6 +397,7 @@
             ]);
         }
 
+        // 2020s 現代傳承
         function handle70s(type) {
             if(type === 'A') { money += 150; reputation += 15; lastEraImg = IMAGES.herbal_ice; }
             else if(type === 'B') { money += 80; reputation += 15; unlockedBadges['b-pack'] = true; document.getElementById('b-pack').classList.add('unlocked'); lastEraImg = IMAGES.landlady; }
@@ -393,7 +405,6 @@
             goToModern();
         }
 
-        // 2020s 現代傳承
         function goToModern() {
             currentEra = "2020s 現代香港";
             lastEraImg = IMAGES.heritage;
