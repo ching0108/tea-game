@@ -1,536 +1,883 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>非物質文化遺產：涼茶舖經營大亨 (傳承典藏版 4.5)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>濟安堂大亨 - 非物質文化遺產涼茶舖經營模擬</title>
     <style>
-        /* [基礎樣式與核心佈局] */
-        :root { --primary-color: #5d4037; --bg-color: #efebe9; --neon-color: #ff1100; }
-        body { background: var(--bg-color); color: #3e2723; font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; text-align: center; padding: 10px; margin: 0; min-height: 100vh; padding-bottom: 90px; }
-        .neon-sign { background: #212121; color: #fff; padding: 12px; border-radius: 8px; border: 3px solid var(--neon-color); box-shadow: 0 0 15px var(--neon-color), inset 0 0 10px var(--neon-color); font-weight: bold; letter-spacing: 3px; max-width: 530px; margin: 0 auto 15px auto; text-shadow: 0 0 5px var(--neon-color); font-size: 18px; }
-        .game-container { max-width: 550px; margin: 0 auto; position: relative; }
-        .game-box { background: #fffdf7; padding: 25px; border-radius: 15px; border: 4px solid var(--primary-color); box-shadow: 0 10px 20px rgba(0,0,0,0.19); position: relative; text-align: left; }
-        .status-container { background: #f5f5f5; border-radius: 10px; padding: 10px; margin-bottom: 15px; border: 2px solid #bcaaa4; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-weight: bold; font-size: 14px; }
-        .stat-item { display: flex; flex-direction: column; align-items: center; }
-        .progress-bg { background: #e0e0e0; border-radius: 5px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden; border: 1px solid #9e9e9e; }
-        .progress-fill { height: 100%; width: 50%; transition: width 0.4s ease; }
-        .audio-control-bar { display: flex; justify-content: space-between; align-items: center; background: #d7ccc8; padding: 5px 12px; border-radius: 6px; margin-bottom: 10px; font-size: 12px; font-weight: bold; }
-        .mute-btn { background: #5d4037; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; width: auto; margin: 0; }
-        
-        /* 🖼️ 評審級大相框：動態背景切換，不重疊，不拉伸 */
-        .image-stage { 
-            background-size: contain !important;
-            background-repeat: no-repeat !important;
-            background-position: center center !important;
-            border: 3px solid #fbc02d; 
-            border-radius: 12px; 
-            margin: 15px 0; 
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.25); 
-            height: 270px; 
+        :root {
+            --primary-color: #4a2c11;
+            --secondary-color: #8c6239;
+            --accent-color: #d9a05b;
+            --bg-color: #f7f3eb;
+            --text-color: #2c1a0c;
+            --success-color: #2d5a27;
+            --error-color: #a62b2b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'PingFang HK', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 霓虹燈與復古邊框 */
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fcfaf2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-left: 6px double var(--primary-color);
+            border-right: 6px double var(--primary-color);
+        }
+
+        /* 頂部霓虹招牌 */
+        header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+            position: relative;
+        }
+
+        .neon-title {
+            font-size: 1.6rem;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--accent-color), 0 0 15px var(--accent-color);
+            letter-spacing: 4px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* 狀態列 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ebdcb9;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .status-item {
             display: flex;
             align-items: center;
+            gap: 5px;
+        }
+
+        /* 遊戲主要內容區域 */
+        .main-content {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 歷史卡片與劇情展示 */
+        .story-card {
+            background: #fff;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .era-badge {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 3px 10px;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+
+        .story-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .story-text {
+            font-size: 0.95rem;
+            color: #444;
+            text-align: justify;
+        }
+
+        /* 大相框展示區域 */
+        .image-frame {
+            width: 100%;
+            border: 10px solid #5a3d28;
+            border-image: repeating-linear-gradient(45deg, #5a3d28, #5a3d28 10px, #8c6239 10px, #8c6239 20px) 10;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.3);
+            background-color: #2c1a0c;
+            display: flex;
             justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16 / 10;
+            border-radius: 4px;
         }
 
-        /* 百寶格抓藥 */
-        .herbs-cabinet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; }
-        .herb-drawer { background: #fff8e1; border: 2px solid #ffb300; border-radius: 6px; padding: 10px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 13px; box-shadow: 0 3px 0 #ff8f00; transition: all 0.1s; user-select: none; }
-        .herb-drawer:active { transform: translateY(2px); box-shadow: 0 1px 0 #ff8f00; }
-        .herb-drawer.selected { background: #ffe082; border-color: #e65100; box-shadow: 0 3px 0 #b33900; color: #e65100; }
-        
-        /* 圖鑑看板 */
-        .collection-panel { background: #fffde7; border: 2px dashed #fbc02d; border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 13px; }
-        .collection-title { font-weight: bold; color: #f57f17; display: flex; justify-content: space-between; }
-        .badge-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
-        .badge { background: #cfd8dc; color: #78909c; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .badge.unlocked { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+        .image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
 
-        /* 🧚 小草精靈 NPC */
-        .fairy-container { position: fixed; bottom: 35px; right: 15px; display: flex; flex-direction: column; align-items: center; z-index: 1500; cursor: pointer; }
-        .fairy-avatar { 
-            width: 75px; 
-            height: 75px; 
-            background: url('https://i.imgs.ovh/2026/07/09/9e571e38b03b6b97fc0fa033cec740e5.jpg') no-repeat center center;
-            background-size: cover;
-            border: 3px solid #ffffff; 
-            border-radius: 50%; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.35); 
-            animation: floatFairy 3s ease-in-out infinite; 
-            position: relative; 
+        /* 小精靈對話區域 */
+        .elf-area {
+            background-color: #f3ede2;
+            border-left: 5px solid var(--accent-color);
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
-        @keyframes floatFairy { 
-            0% { transform: translateY(0px); } 
-            50% { transform: translateY(-8px); filter: drop-shadow(0 10px 15px rgba(76,175,80,0.4)); } 
-            100% { transform: translateY(0px); } 
+
+        .elf-avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            animation: float 3s ease-in-out infinite;
         }
-        .fairy-avatar::after { content: '💡暖心提示'; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #2e7d32; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 1px solid white; white-space: nowrap; }
-        .fairy-bubble { display: none; position: absolute; bottom: 85px; right: 5px; width: 240px; background: #ffffff; border: 2px solid #4caf50; border-radius: 12px; padding: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-size: 13px; text-align: left; line-height: 1.6; color: #2d5a2f; }
-        .fairy-bubble::after { content: ''; position: absolute; bottom: -10px; right: 30px; border-width: 10px 10px 0; border-style: solid; border-color: #4caf50 transparent; }
-        .fairy-bubble-title { font-weight: bold; color: #1b5e20; margin-bottom: 6px; border-bottom: 1px dashed #cbdccb; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; }
-        
-        /* 🎬 電影式大氣幕後幕前人員字幕 */
-        .credits-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0c0a09; color: #e7e5e4; z-index: 2000; overflow: hidden; font-family: 'Times New Roman', 'MingLiU', serif; }
-        .credits-container { position: absolute; width: 100%; top: 100%; animation: scrollCredits 28s linear forwards; text-align: center; padding-bottom: 120px; }
-        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -150%; } }
-        .credits-section { margin: 45px 0; letter-spacing: 1px; }
-        .credits-title { color: #d97706; font-size: 19px; font-weight: bold; letter-spacing: 3px; margin-bottom: 12px; font-family: 'PMingLiU', serif; }
-        .credits-name { font-size: 16px; line-height: 2.0; color: #f5f5f4; }
-        .credits-restart-btn { background: #d97706; color: #fff; border: none; padding: 12px 28px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: auto; margin-top: 30px; display: inline-block; letter-spacing: 2px; box-shadow: 0 4px 10px rgba(217,119,6,0.3); }
-        
-        .landlady-dialog { background: #fff3e0; border: 2px solid #ffb74d; border-radius: 12px; padding: 12px; margin: 15px 0; position: relative; }
-        .landlady-dialog::before { content: ''; position: absolute; top: -12px; left: 30px; border-width: 0 12px 12px; border-style: solid; border-color: #ffb74d transparent; }
-        .landlady-dialog h4 { margin: 0 0 5px 0; color: #e65100; font-size: 14px; }
-        .encyclopedia { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 12px; margin: 15px 0; border-radius: 4px; font-size: 13px; line-height: 1.6; color: #1b5e20; }
-        button { background: #8d6e63; color: white; border: none; padding: 12px; margin: 6px 0; cursor: pointer; width: 100%; border-radius: 8px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #5d4037; transition: 0.1s; text-align: left;}
-        button:hover { background: #5d4037; }
-        button:active { transform: translateY(3px); box-shadow: 0 1px 0 #5d4037; }
-        .funny-alert { color: #d84315; font-weight: bold; font-size: 15px; margin: 10px 0; }
-        h3 { margin: 0; color: var(--primary-color); padding-bottom: 6px; font-size: 17px; text-align: center; }
-        p { line-height: 1.6; font-size: 14px; margin: 8px 0; }
-        .footer-disclaimer { position: fixed; bottom: 0; right: 0; left: 0; background: rgba(33, 33, 33, 0.9); color: #b0bec5; font-size: 11px; padding: 6px; text-align: center; z-index: 1000; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .elf-bubble {
+            font-size: 0.9rem;
+            color: #5a3d28;
+            font-weight: 500;
+        }
+
+        /* 選項與決策面板 */
+        .options-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            border: 2px solid var(--secondary-color);
+            color: var(--text-color);
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-btn:hover, .option-btn:active {
+            background-color: #ebdcb9;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* 診症單選面板 */
+        .recommend-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .pot-option {
+            background-color: #fff;
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .pot-option:hover, .pot-option.selected {
+            background-color: #ebdcb9;
+            border-color: var(--primary-color);
+            transform: scale(1.03);
+        }
+
+        .pot-icon {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .pot-name {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .pot-desc {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        /* 下一步按鈕 */
+        .next-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .next-btn:hover, .next-btn:active {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        /* 謝幕字幕與致謝 */
+        .credits-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .credit-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .credit-item {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .credit-role {
+            font-weight: bold;
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .credit-name {
+            font-size: 1.05rem;
+            color: var(--text-color);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .reset-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* 音樂控制按鈕 */
+        .music-btn {
+            position: absolute;
+            right: 15px;
+            top: 18px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
 
-    <audio id="bgm" loop src="https://files.catbox.moe/xn2zja.mp3"></audio>
-
-    <div class="neon-sign" id="neonTitle">🏮 濟安堂大亨：從零打造百年老字號 🏮</div>
-
     <div class="game-container">
-        <div class="audio-control-bar">
-            <span>🎵 濟安堂電台：<span id="music-status">音訊加載完畢 (請點擊下方按鈕啟動)</span></span>
-            <button class="mute-btn" onclick="toggleMute()">開關音樂</button>
+        <!-- 頂部招牌 -->
+        <header>
+            <div class="neon-title">濟安堂大亨</div>
+            <div class="subtitle">香港非物質文化遺產 · 涼茶舖經營傳奇</div>
+            <button class="music-btn" id="musicToggle" onclick="toggleMusic()">🎵</button>
+        </header>
+
+        <!-- 數據欄（不爆分機制） -->
+        <div class="status-bar">
+            <div class="status-item">🏆 聲望: <span id="reputation">50</span>%</div>
+            <div class="status-item">💰 資金: $<span id="funds">500</span></div>
+            <div class="status-item">📅 年代: <span id="year">1945s</span></div>
         </div>
 
-        <div class="game-box" id="game"></div>
-        
-        <div class="collection-panel">
-            <div class="collection-title">
-                <span>📜 濟安堂·國家級非遺歷史圖鑑</span>
-                <span id="collection-rate">解鎖進度: 0%</span>
+        <!-- 主要互動視窗 -->
+        <div class="main-content" id="gameBody">
+            <!-- 歷史相框 -->
+            <div class="image-frame">
+                <img id="gameImage" src="" alt="歷史場景">
             </div>
-            <div class="badge-grid" id="badgeGrid">
-                <span class="badge" id="b-copper">🏺 膽形大銅壺</span>
-                <span class="badge" id="b-agent">🗺️ 國營總代理</span>
-                <span class="badge" id="b-penny">🪙 一仙水碗茶</span>
-                <span class="badge" id="b-night">📺 貧民夜總會</span>
-                <span class="badge" id="b-pack">🚀 現代顆粒沖劑</span>
-                <span class="badge" id="b-concept">✨ 自然與宇宙知識</span>
-            </div>
-        </div>
 
-        <div class="fairy-container" onclick="toggleFairyBubble(event)">
-            <div class="fairy-bubble" id="fairyBubble">
-                <div class="fairy-bubble-title">👧 夥伴阿草的暖心手記：</div>
-                <div id="fairyHintText">新老闆好呀！點擊我，我會幫情節分析歷史與藥材線索哦！</div>
+            <!-- 歷史與劇情 -->
+            <div class="story-card">
+                <span class="era-badge" id="eraBadge">戰後重建</span>
+                <div class="story-title" id="stageTitle">序章：亂世中的銅壺馨香</div>
+                <div class="story-text" id="stageText">正在載入濟安堂歷史檔案...</div>
             </div>
-            <div class="fairy-avatar"></div>
-        </div>
-    </div>
 
-    <div class="credits-screen" id="creditsScreen">
-        <div class="credits-container" id="creditsContainer">
-            <h2 style="color: #d97706; font-size: 26px; margin-bottom: 15px; font-family: 'PMingLiU', serif; letter-spacing: 4px;">🏆 濟安堂大亨 · 傳承終章 🏆</h2>
-            <p style="font-size: 13px; color: #78716c; letter-spacing: 5px; margin-bottom: 50px;">THE END</p>
-            
-            <div class="credits-section">
-                <div class="credits-title">非物質文化遺產項目研發團隊</div>
-                <div class="credits-name">東華三院邱子田紀念中學<br>汪靖琦、李卓穎</div>
+            <!-- 阿草小精靈提示區 -->
+            <div class="elf-area">
+                <div class="elf-avatar" id="elfEmoji">🧚‍♀️</div>
+                <div class="elf-bubble" id="elfText">你好！我是涼茶小精靈「阿草」，我會陪著你經歷濟安堂的百年風雨。</div>
+            </div>
+
+            <!-- 互動決策面板 -->
+            <div class="options-panel" id="optionsContainer">
+                <!-- 按鈕會由 JavaScript 動態生成 -->
             </div>
             
-            <div class="credits-section">
-                <div class="credits-title">學術顧問與歷史考證指導</div>
-                <div class="credits-name">馮皓琳 老師</div>
-            </div>
-            
-            <div class="credits-section">
-                <div class="credits-title">文獻理論參考文獻</div>
-                <div class="credits-name">鄧家宙博士著作《香港非物質文化遺產系列：涼茶》</div>
-            </div>
-            
-            <div class="credits-section">
-                <div class="credits-title">數位交互式媒介技術開發</div>
-                <div class="credits-name">CodePen 交互式文創引擎</div>
-            </div>
-            
-            <div class="credits-section" style="margin-top: 60px;">
-                <button class="credits-restart-btn" onclick="restartFromCredits()">🔄 返回主介面</button>
+            <div id="actionContainer">
+                <!-- 下一步按鈕 -->
             </div>
         </div>
     </div>
 
-    <div class="footer-disclaimer">
-        ⚠️ 歷史文獻參考：鄧家宙博士《香港非物質文化遺產系列：涼茶》。
-    </div>
+    <!-- 背景音樂 (採用輕柔復古的中樂旋律) -->
+    <audio id="bgMusic" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" style="display:none;"></audio>
 
     <script>
-        let money = 500;       
-        let reputation = 40;  
-        let currentEra = "背景導覽";
-        let unlockedBadges = {}; 
-        let selectedHerbs = [];  
-        let audioStarted = false;
-        let currentPatientScenario = 0;
-
-        const fairyHints = {
-            "背景導覽": "新老闆，我們的店鋪正要開張呢！打開音樂，看看我們精美的文創海報吧。每一步經營規劃都會影響街坊對我們的信任度（聲望）哦！",
-            "創業任務：採購渠道": "【阿草提示】傳統的上環街和南北行此時正面臨轉型。私下採購便宜但藥材來源不明；而內地授權的國營總代理，則能對藥材進行嚴格把關。選合規的總代理會更穩妥呀！",
-            "創業任務：配置設備": "【阿草提示】第一家著名涼茶老店如王老吉，都極看重招牌形象。古色古香的『膽形大銅壺』能讓路人一眼認出！吃完苦苦的茶，送上一顆酸甜的涼果更是人情味的體現。",
-            "1930-1950年代": "【阿草提示】在那個動盪年代，一杯涼茶只賣『一仙』，利潤微薄，但對貧苦大眾來說是防病良藥。這時候累積『聲望』比賺錢更具長遠價值喔！",
-            "1960年代": "【阿草提示】工廠林立，年輕人開始追求時髦。舖子裡放一台點唱機，大家圍在一起看電視聊天，一定能吸引超多摩登青年聚會！大膽迎合娛樂趨勢吧！",
-            "互動配藥考核": "【阿草提示】熬夜加班的女工姐姐體內『口苦、肝火旺、眼乾』，需要【夏枯草】清肝火、散結；【銀菊露】清熱明目。而曬傷的碼頭工人燥結便秘，最需要含有豐富油脂、能滑腸通便的【火麻仁】！",
-            "1970-1980年代": "【阿草提示】天啊，包租婆居然把租金加了三倍！面對西方雪糕汽水的堂飲衝擊，大膽研發免煎顆粒沖劑或瓶裝涼茶進駐便利店，才是絕處逢生的關鍵轉型！",
-            "2020s 現代香港": "【阿草提示】涼茶列入非遺的核心在於它蘊含了『有關自然界和宇宙的知識與實踐』，也就是順應四時、防病強身的大自然智慧。選A才能展現真正的非遺底蘊！"
-        };
-
-        const gameBox = document.getElementById('game');
-        const bgm = document.getElementById('bgm');
-
+        // 大相框歷史照片綁定
         const IMAGES = {
-            cover: "https://i.imgs.ovh/2026/07/10/a0bd7d1514f314a392d982a9298d8e22.png",       
-            shanghai_street: "https://i.imgs.ovh/2026/07/09/a212d6c761b8505c5bafe02fb46c3402.jpg", 
-            old_shop: "https://i.imgs.ovh/2026/07/10/a57071c3677ced2a5338fd5d2aa5304d.png",     
-            water_tea: "https://i.imgs.ovh/2026/07/10/3fa6a288a65d5204ed398d0f18ba0ec5.png",    
-            first_ad: "https://i.imgs.ovh/2026/07/09/e257ad0a3d7021eef0cc0873ecd77a86.jpg",     
-            flos: "https://i.imgs.ovh/2026/07/10/86e19bcac2143e30b4eb0a64acd02e82.jpg",         
-            poison_news: "https://i.imgs.ovh/2026/07/09/1100cd12af97cbebd9ace70b422306d8.jpg",  
-            tv_era: "https://i.imgs.ovh/2026/07/10/e013b28bd4bcd1b4fdce47f76355c8b5.png",       
-            tv_crowd: "https://i.imgs.ovh/2026/07/09/8492cca782e2153df2fcb1c601f4dd5a.jpg",     
-            jukebox: "https://i.imgs.ovh/2026/07/09/99c8f3650e22ee9d956274924d68c116.jpg",      
-            chatting: "https://i.imgs.ovh/2026/07/09/3b4fbeeefbd187730830c22b975cc8de.jpg",     
-            boiling: "https://i.imgs.ovh/2026/07/09/3ee43e063799cdb36d8917b270af7637.jpg",      
-            xiakucao: "https://i.imgs.ovh/2026/07/10/0e2e0f978599578d14300f88eacdc612.png",     
-            huomaren: "https://i.imgs.ovh/2026/07/10/ac06ac5f2a6541b8200fe1fd11e75b11.jpg",     
-            ice_innovation: "https://i.imgs.ovh/2026/07/10/384d7027ac2b9735b8d9977819b0d0f5.png",
-            herbal_ice: "https://i.imgs.ovh/2026/07/09/f5f6f6508e0779123abc5000ed39e7d4.png",    
-            landlady: "https://i.imgs.ovh/2026/07/09/18bae44e05a551165ef1094eb7a5774a.jpg",      
-            heritage: "https://i.imgs.ovh/2026/07/10/796b0bfe36c68e2a9eb559485723fbf9.png"      
+            intro: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80", // 老藥材與秤
+            stg1_shop: "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=600&q=80", // 傳統中式店面
+            stg2_influenza: "https://images.unsplash.com/photo-1584036561566-baf241830990?auto=format&fit=crop&w=600&q=80", // 1950年代流感與醫護
+            stg3_tv: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=600&q=80", // 復古黑白電視機
+            stg4_ice: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80", // 涼茶雪糕與跨界
+            stg5_heritage: "https://images.unsplash.com/photo-1541829011-856c6b39180b?auto=format&fit=crop&w=600&q=80", // 現代社區與非遺傳承
+            ending: "https://images.unsplash.com/photo-1464373132282-079043c97416?auto=format&fit=crop&w=600&q=80" // 璀璨的香港夜景
         };
 
-        let lastEraImg = IMAGES.cover;
+        // 遊戲核心數據
+        let rep = 50;
+        let funds = 500;
+        let currentStage = 0;
+        let musicPlaying = false;
+        let selectedPot = "";
 
-        function toggleFairyBubble(event) {
-            event.stopPropagation();
-            const bubble = document.getElementById('fairyBubble');
-            const hintTextZone = document.getElementById('fairyHintText');
-            hintTextZone.innerHTML = fairyHints[currentEra] || "用心經營，傳承非遺文化！";
-            bubble.style.display = bubble.style.display === 'block' ? 'none' : 'block';
-            if(bubble.style.display === 'block') playBeep('success');
-        }
-
-        document.addEventListener('click', function() {
-            document.getElementById('fairyBubble').style.display = 'none';
-        });
-
-        function initAudio() {
-            if (!audioStarted) {
-                bgm.play().then(() => {
-                    document.getElementById('music-status').innerText = "🔊 正在循環播放古典背景音樂";
-                    audioStarted = true;
-                }).catch(e => { audioStarted = false; });
+        // 歷史劇情與決策關卡設計
+        const stages = [
+            {
+                year: "1945s",
+                badge: "戰後重建",
+                title: "第一關：廢墟中的生存抉擇",
+                text: "1945年日軍撤退，香港百廢待興。濟安堂在街頭勉強重開，但此時韓戰與禁運導致內地藥材進口中斷，藥材供應面臨生死危機。你該如何維持店鋪開張？",
+                image: IMAGES.stg1_shop,
+                elf: "聽說內地藥材進口現在卡得很死。但我們要開店，必須保證草藥來源安全，不然砸了招牌就砸了！",
+                type: "normal",
+                options: [
+                    {
+                        text: "聯絡上環老牌「南北行」，採購東南亞轉口輸入、品質穩定的草藥。",
+                        repEffect: 15,
+                        fundEffect: -100,
+                        feedback: "你選擇了最穩健的商業路線！雖然南北行因為轉口稅與高昂運費收費偏貴，但草藥來源非常安全、質量上乘，濟安堂的老招牌保住了！",
+                        elfComment: "太好了！南北行商譽好，東南亞草藥也有品質保證。雖然貴了點，但店名聲好最重要！"
+                    },
+                    {
+                        text: "向街邊來歷不明的散商採購便宜的一手黑市草藥，節省成本。",
+                        repEffect: -20,
+                        fundEffect: -30,
+                        feedback: "雖然節省了大量資金，但這批草藥中夾雜了大量劣質霉變的雜草，有街坊飲用後出現輕微胃痛，濟安堂的名聲受到了極大打擊！",
+                        elfComment: "天啊，這些散商的藥材果然有問題……客人生病了，我們的商譽跌了好多……"
+                    },
+                    {
+                        text: "自己利用業餘時間，前往新界大帽山等山頭親自採摘野生草藥。",
+                        repEffect: 5,
+                        fundEffect: 0,
+                        feedback: "親自採藥不花任何資金，而且能確保草藥天然，但野生產量十分有限且極其耗費體力，店鋪僅能勉強維持最低限度的開張。",
+                        elfComment: "雖然不花錢，但是採藥好辛苦，產量根本不夠賣，這不是長久之計呀。"
+                    }
+                ]
+            },
+            {
+                year: "1950s",
+                badge: "一仙水碗",
+                title: "第二關：春季流感與醫者仁心",
+                text: "1950年代，香港基層市民生活極其貧困，隨後春季流行性感冒肆虐，金銀花、夏枯草價格一日三變。街坊工友紛紛病倒，前來求茶。此時你該如何訂定營運方針？",
+                image: IMAGES.stg2_influenza,
+                elf: "看著門外那麼多生病的街坊，一碗涼茶可能是他們唯一的救命草，我們濟安堂是救人第一，還是賺錢第一呢？",
+                type: "normal",
+                options: [
+                    {
+                        text: "堅持「一仙水碗茶」不加價，即使金銀花成本暴漲，也與街坊共渡時艱。",
+                        repEffect: 25,
+                        fundEffect: -150,
+                        feedback: "醫者仁心！你虧本賣涼茶的善舉感動了整個社區，街坊尊稱你為『濟安活菩薩』，濟安堂的聲望達到了空前高度！",
+                        elfComment: "雖然我們虧了不少錢，但是看到街坊們病好，還對我們千恩萬謝，這才是非遺的溫度！"
+                    },
+                    {
+                        text: "順應市場，大幅提高涼茶售價以維持店鋪高利潤，彌補成本。",
+                        repEffect: -25,
+                        fundEffect: 150,
+                        feedback: "店鋪賺取了豐厚資金，但在這個流感肆虐的絕望時期，基層市民根本喝不起昂貴的涼茶，濟安堂被街坊指責為『無良奸商』。",
+                        elfComment: "唉，大家都生病沒錢，加價那麼多，大家都喝不起了……商譽直接暴跌了……"
+                    },
+                    {
+                        text: "推出「半價義贈」時段，並在店面設立「愛心捐款瓷罐」讓街坊合力支持。",
+                        repEffect: 15,
+                        fundEffect: -50,
+                        feedback: "非常聰明的平衡決策！有能力的富裕市民紛紛往瓷罐投錢，支持你免費贈茶給失業工友，既幫助了基層，又沒有讓店鋪陷入破產破產！",
+                        elfComment: "太厲害了！這個辦法既幫助了人，又讓我們得以生存下去，大家都稱讚我們有智慧！"
+                    }
+                ]
+            },
+            {
+                year: "1950s",
+                badge: "百草診症",
+                title: "特別關：掌櫃診症推薦飲用",
+                text: "流感平息後，店裡迎來了兩位特殊的客人。作為掌櫃，涼茶都是事先在大銅壺中大鍋熬製保溫的，請根據客人的症狀，為他們『推薦飲用』最適合的一款經典涼茶（只能單選，不可混搭）：",
+                image: IMAGES.intro,
+                elf: "來！考驗我們對涼茶配方了解的時候到了。看清楚客人的症狀，千萬不要推薦錯了，否則會扣聲望哦！",
+                type: "recommend",
+                patients: [
+                    {
+                        name: "【熬夜加班的工廠女工】",
+                        symptom: "「掌櫃，我最近在紗廠經常熬夜開夜車，口苦、眼睛乾澀、還長了很多口瘡，肝火盛得很，該喝什麼？」",
+                        correct: "twentyfour",
+                        options: [
+                            { id: "twentyfour", name: "🏺 夏枯草 / 廿四味", desc: "苦寒，清熱解毒，專治熬夜口苦、肝火盛。" },
+                            { id: "fiveflower", name: "🌼 五花茶 / 銀菊露", desc: "甘涼，清熱祛濕，專治風熱感冒、輕微喉痛。" },
+                            { id: "hempseed", name: "🪙 火麻仁", desc: "性平，潤腸通便，專治暴曬積熱、大便不暢。" }
+                        ],
+                        feedbackCorrect: "回答完全正確！夏枯草與廿四味大寒，最適合清除熬夜女工的內臟積熱與肝火！",
+                        feedbackIncorrect: "推薦錯誤了... 這款涼茶無法對症下藥，女工喝了之後口瘡依然疼痛不已。"
+                    },
+                    {
+                        name: "【碼頭暴曬的搬運工人】",
+                        symptom: "「掌櫃，我在碼頭太陽底下曬了整整一天，全身發熱，喉嚨乾涸，而且肚子脹得很，好幾天都便秘排不出，該喝什麼？」",
+                        correct: "hempseed",
+                        options: [
+                            { id: "twentyfour", name: "🏺 夏枯草 / 廿四味", desc: "苦寒，清熱解毒，專治熬夜口苦、肝火盛。" },
+                            { id: "fiveflower", name: "🌼 五花茶 / 銀菊露", desc: "甘涼，清熱祛濕，專治風熱感冒、輕微喉痛。" },
+                            { id: "hempseed", name: "🪙 火麻仁", desc: "性平，潤腸通便，專治暴曬積熱、大便不暢。" }
+                        ],
+                        feedbackCorrect: "回答完全正確！火麻仁富含油脂，清熱潤腸，最適合在太陽下暴曬、便秘燥結的碼頭工人！",
+                        feedbackIncorrect: "推薦錯誤了... 這款涼茶並不能解決他的腸胃燥結，工友回去後還是便秘難耐。"
+                    }
+                ]
+            },
+            {
+                year: "1960s",
+                badge: "社區文化",
+                title: "第三關：貧民夜總會的社交狂潮",
+                text: "1960年代香港工業騰飛，西式汽水與冰室大舉搶佔市場。為了跟時髦的西式茶餐廳競爭，涼茶舖開始成為社區社交中心。面對昂貴的科技設備，你該怎麼做？",
+                image: IMAGES.stg3_tv,
+                elf: "現在年輕人都跑去冰室聽歌喝汽水了，嫌我們傳統涼茶舖又悶又土。我們店裡得添置些新玩意，才能留住街坊和年輕人啊！",
+                type: "normal",
+                options: [
+                    {
+                        text: "斥巨資購入時髦的「黑白電視機」與「投幣式點唱機」，提供卡座，打造社區『貧民夜總會』。",
+                        repEffect: 20,
+                        fundEffect: -200,
+                        feedback: "極其大膽而成功的投資！年輕人與街坊為了看電視和聽黑膠唱片，每天擠滿了濟安堂，一邊聽歌一邊喝五花茶，店鋪名聲大噪！",
+                        elfComment: "哇！點唱機跟電視太受歡迎了，雖然花光了我們的老本，但天天高朋滿座，人氣好旺！"
+                    },
+                    {
+                        text: "添置一台較便宜的「麗的呼聲」收音機廣播，播放最紅的李我天空小說（廣播劇）。",
+                        repEffect: 10,
+                        fundEffect: -60,
+                        feedback: "十分穩健的決策！每天晚上廣播劇開播時，大量街坊自備板凳坐在店門口，一邊喝一邊聽故事，以低成本維持了店鋪的溫馨人情味。",
+                        elfComment: "聽廣播劇是香港市民的集體回憶呢，低成本就能吸引忠實的老街坊，很不錯的折衷辦法！"
+                    },
+                    {
+                        text: "堅持最傳統的素雅老店風格，拒絕引進任何電視機、廣播等娛樂設備。",
+                        repEffect: -15,
+                        fundEffect: 0,
+                        feedback: "店鋪完全被時代孤立。年輕一輩覺得濟安堂死氣沉沉，紛紛轉移到隔壁裝潢新潮、有音樂聽的茶餐廳去消遣，生意額逐步下滑。",
+                        elfComment: "唉，別人都去時髦冰室玩了，如果我們繼續一成不變，店裡都快空空如也了……"
+                    }
+                ]
+            },
+            {
+                year: "1970-1980s",
+                badge: "西方衝擊",
+                title: "第四關：西化浪潮與跨界草本雪糕",
+                text: "1970至1980年代香港經濟起飛，店鋪租金暴漲，包租婆甚至要把濟安堂的租金提高三倍！與此同時，西方快餐與西式冰淇淋席捲全港，年輕人熱衷喝汽水、吃西雪糕，傳統熱涼茶被視為『落後、苦澀、老土』。",
+                image: IMAGES.stg4_ice,
+                elf: "包租婆加租三倍簡直是搶劫！而且大家都不願意喝苦茶了，我們必須進行一場翻天覆地的創新！如果把西式雪糕跟我們的中藥材融合，會發生什麼？",
+                type: "normal",
+                options: [
+                    {
+                        text: "中西合璧！大膽利用店裡的冷凝設備，研發出全港首創的「廿八味草本涼茶雪糕」與特調草本紅豆冰。",
+                        repEffect: 25,
+                        fundEffect: 150,
+                        feedback: "震撼全港的文創發明！把苦澀的廿八味做成甜美冰涼的草本雪糕，奇妙的口感引發全港年輕人排隊『打卡』熱潮！連外國報紙都來採訪，利潤直接賺翻，輕鬆解決了高租金危機！",
+                        elfComment: "天啊！把苦苦的廿八味做成甜甜的雪糕，這真是太瘋狂、太好吃的點子了！年輕人都排長龍來買，我們的招牌保住了！"
+                    },
+                    {
+                        text: "與中藥廠合作，將秘方工業化製成「免煎中藥顆粒沖劑」，主動送貨到觀塘等新興工業區的工廠。",
+                        repEffect: 15,
+                        fundEffect: 80,
+                        feedback: "非常有遠見的工業化轉型。打工仔常熬夜加班，這種即沖涼茶顆粒極受工廠區歡迎，成功避開了實體舖租金上升的地理限制，穩步盈利。",
+                        elfComment: "工廠區的打工仔確實非常需要這種方便的即沖顆粒，雖然沒有雪糕那麼耀眼，但也是個極佳且實用的商業出路！"
+                    },
+                    {
+                        text: "不作任何菜單創新或工業包裝轉型，堅持售賣傳統堂飲熱涼茶，並嘗試與包租婆講價。",
+                        repEffect: -25,
+                        fundEffect: -150,
+                        feedback: "講價失敗！在沒有新收入來源的情況下，店鋪無法負擔昂貴的鋪租，且年輕客群流失殆盡，濟安堂瀕臨破產與倒閉邊緣。",
+                        elfComment: "嗚嗚……包租婆根本不肯減租，傳統熱茶又沒人買，難道我們真的要面臨結業危機了嗎……"
+                    }
+                ]
+            },
+            {
+                year: "2020s",
+                badge: "非遺傳承",
+                title: "最終關：國家級非物質文化遺產的活化",
+                text: "邁入2020年代，國務院將涼茶列入首批國家級非物質文化遺產名錄。作為濟安堂現代繼承人，你明白非遺的核心是「有關自然界和宇宙的知識與實踐」。面對當代社會，你該如何傳承這份百年文化？",
+                image: IMAGES.stg5_heritage,
+                elf: "我們終於走到了現代！非遺不只是一杯飲料，更是一份順應自然、四時養生的民間實踐智慧。我們該如何將它發揚光大？",
+                type: "normal",
+                options: [
+                    {
+                        text: "守護文化底蘊：將二十四節氣養生、四時防病的中草藥知識，製成精美文創卡片與四季養生手冊，強調非遺的科學與實踐本質。",
+                        repEffect: 20,
+                        fundEffect: -20,
+                        feedback: "最深刻的傳承！你成功守護了非遺涼茶的文化底蘊，讓市民重新認識到涼茶不只是飲料，而是先人順應天地規律的智慧結晶。濟安堂榮獲聯合國教科文組織文化遺產保護卓越獎！",
+                        elfComment: "太令人感動了！非遺的核心就是順應大自然的智慧，把這個講透，大家才能明白涼茶的珍貴！這才是真正的文化傳承！"
+                    },
+                    {
+                        text: "與本地學校（如邱子田紀念中學）合作，舉辦「非遺草本工作坊」與「一日掌櫃體驗」，讓年輕一代親手配製草藥。",
+                        repEffect: 25,
+                        fundEffect: -10,
+                        feedback: "極具活力的活態傳承！學生和社區青年在工作坊裡親手熬煮五花茶，辨識藥材。非遺智慧成功根植於下一代心中，濟安堂成為全港非遺教育示範基地！",
+                        elfComment: "這個主意太棒了！讓中學生們親自體驗辨藥和熬煮，老祖宗的智慧在年輕一代手中活了過來，這才是活生生的傳承！"
+                    },
+                    {
+                        text: "去內涵網紅化：將店面裝修成極簡文青風，淡化傳統中醫理論，推出高顏值但失去靈魂的網紅特調涼茶，供人拍照打卡。",
+                        repEffect: -20,
+                        fundEffect: 100,
+                        feedback: "店鋪雖然獲得了短期內的社交媒體流量與網紅打卡，但因為完全拋棄了傳統中藥材與非遺核心養生知識，被專家指責為『丟失文化靈魂的空洞噱頭』。",
+                        elfComment: "網紅打卡雖然賺錢，但如果大家都忘了涼茶背後的歷史和先賢智慧，這份珍貴的非遺遲早會徹底消失的……"
+                    }
+                ]
             }
-        }
-        function toggleMute() {
-            bgm.muted = !bgm.muted;
-            document.getElementById('music-status').innerText = bgm.muted ? "🔇 已靜音" : "🔊 正在循環播放";
-        }
-        function playBeep(type) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain); gain.connect(ctx.destination);
-                if (type === 'success') {
-                    osc.frequency.setValueAtTime(587.33, ctx.currentTime); 
-                    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); 
-                    gain.gain.setValueAtTime(0.06, ctx.currentTime);
-                    osc.start(); osc.stop(ctx.currentTime + 0.18);
-                } else {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(140, ctx.currentTime); 
-                    gain.gain.setValueAtTime(0.06, ctx.currentTime);
-                    osc.start(); osc.stop(ctx.currentTime + 0.22);
-                }
-            } catch(e) {}
-        }
-
-        function updateUI() {
-            let repColor = '#4caf50';
-            if (reputation < 30) repColor = '#ff9800';
-            if (reputation < 15) repColor = '#f44336';
-            
-            if (money <= 0) { setTimeout(() => triggerGameOver("因資金鏈斷裂，無力承擔營運成本，遺憾清盤。"), 100); }
-            else if (reputation <= 0) { setTimeout(() => triggerGameOver("因醫療商譽事故，徹底失去社會大眾信任。"), 100); }
-
-            let totalBadges = Object.keys(unlockedBadges).length;
-            document.getElementById('collection-rate').innerText = `解鎖進度: ${Math.round((totalBadges/6)*100)}%`;
-
-            return `
-                <div class="status-container">
-                    <p style="margin:0 0 5px 0; font-weight:bold; color:#5d4037; font-size:13px;">📅 當前年代：${currentEra}</p>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span>💰 濟安堂資產: $${money}</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width:${Math.min(money/10, 100)}%; background-color:#2e7d32;"></div></div>
-                        </div>
-                        <div class="stat-item">
-                            <span>❤️ 店鋪聲望: ${reputation} / 100</span>
-                            <div class="progress-bg"><div class="progress-fill" style="width:${reputation}%; background-color:${repColor};"></div></div>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        function render(text, choices) {
-            document.getElementById('fairyBubble').style.display = 'none';
-            let imageSection = `<div class="image-stage" style="background: url('${lastEraImg}')"></div>`;
-            gameBox.innerHTML = updateUI() + imageSection + text + choices.map(c => `<button onclick="${c.action}">${c.text}</button>`).join('');
-        }
-
-        function unlockBadge(id) {
-            if(!unlockedBadges[id]) {
-                unlockedBadges[id] = true;
-                document.getElementById(id).classList.add('unlocked');
-                playBeep('success');
-            }
-        }
-
-        function showIntro() {
-            money = 600; reputation = 40; currentEra = "背景導覽"; currentPatientScenario = 0;
-            lastEraImg = IMAGES.cover; 
-            // 🛠️ 核心修復：將原本的空文字改成你們的主題說明，防止 CodePen 誤判為死網頁而卡死空白
-            let txt = `<h3>🏮 濟安堂大亨 · 開張大吉</h3><p style="text-align:center;">歡迎來到跨世紀非物質文化遺產經營之旅！點擊下方按鈕啟動復古電台，即可開啟你們精彩的經營故事與精美特效。</p>`;
-            render(txt, [{ text: "🎵 點擊開啟復古音樂並規劃店鋪", action: "initAudio(); build_shop_q1();" }]);
-        }
-
-        function build_shop_q1() {
-            currentEra = "創業任務：採購渠道";
-            lastEraImg = IMAGES.shanghai_street; 
-            let txt = `<h3>【創業任務一：規劃戰後中藥材的安全進口渠道】</h3>
-            <p style="text-align:justify;">戰後初期，上環一帶中藥貿易正面臨歷史轉型。為了確保藥材安全、穩定且高質量地進口，你決定採取哪種策略？</p>`;
-            render(txt, [
-                { text: "🗺️ 策略 A：與內地國營藥業單位的進口總代理建立長期合約。", action: "build_shop_r1(true)" },
-                { text: "🪵 策略 B：轉向零散民間私商採購便宜藥材，不設安全把關。", action: "build_shop_r1(false)" }
-            ]);
-        }
-
-        function build_shop_r1(isRight) {
-            let txt = "";
-            if(isRight) { money -= 150; reputation += 20; unlockBadge('b-agent'); txt = `<p class="funny-alert">👍 決策正確！資金 -150，聲望 +20！安全藥材網已成，解鎖圖鑑【國營總代理】！</p>`; }
-            else { money -= 30; reputation -= 20; playBeep('fail'); txt = `<p class="funny-alert">❌ 陷入隱患！資金 -30，聲望 -20。50年代私商藥材極易混入毒草！</p>`; }
-            render(txt, [{ text: "⏩ 進行店面設備配置任務", action: "build_shop_q2()" }]);
-        }
-
-        function build_shop_q2() {
-            currentEra = "創業任務：配置設備";
-            lastEraImg = IMAGES.old_shop; 
-            let txt = `<h3>【創業任務二：購置傳統涼茶舖的核心靈魂】</h3>
-            <p style="text-align:justify;">效仿廣東第一家著名老店的規矩，招牌與形象至關重要。你會購置閃閃發亮的「膽形大銅壼」，還是便宜玻璃杯？</p>`;
-            render(txt, [
-                { text: "🏺 配置 A：高價膽形大銅壼與免費解苦涼果（符合消費習慣）。", action: "build_shop_r2(true)" },
-                { text: "🥛 配置 B：便宜玻璃杯，不提供解苦附屬涼果。", action: "build_shop_r2(false)" }
-            ]);
-        }
-
-        function build_shop_r2(isRight) {
-            let txt = "";
-            if(isRight) { money -= 120; reputation += 20; unlockBadge('b-copper'); txt = `<p class="funny-alert">🏺 配置成功！資金 -120，聲望 +20！解鎖圖鑑【膽形大銅壺】！</p>`; }
-            else { money -= 40; reputation -= 15; playBeep('fail'); txt = `<p class="funny-alert">❌ 顧客冷淡！缺乏解苦涼果，嚴重違反消費習慣，商譽破產危機！</p>`; }
-            render(txt, [{ text: "🎉 店鋪落成！開始開張歷史事件", action: "triggerRandom1950sEvent()" }]);
-        }
-
-        function triggerRandom1950sEvent() {
-            currentEra = "1930-1950年代";
-            let rand = Math.random() > 0.5;
-            if(rand) {
-                lastEraImg = IMAGES.water_tea; 
-                let txt = `<h3>🛒 歷史事件：平民低消費時代的一仙茶</h3>
-                <p style="text-align:justify;">50年代物價低廉，一杯茶僅售「一仙」。面對生活困頓無力付款的基層街坊，你是要口碑還是堅持收費？</p>`;
-                render(txt, [
-                    { text: "🤝 堅持口碑（聲望）：堅持一仙薄利多銷，給予寬容。", action: "handle50sResult('charity')" },
-                    { text: "💰 堅持利潤（資產）：大幅調高售價並驅趕。", action: "handle50sResult('greedy')" }
-                ]);
-            } else {
-                lastEraImg = IMAGES.first_ad; 
-                let txt = `<h3>😷 突發事件：嶺南春季大型流感</h3>
-                <p style="text-align:justify;">疫病橫行，民間驚恐。作為傳統老字號，你需要調配核心中藥材賑濟或者乘機提高價格？</p>`;
-                render(txt, [
-                    { text: "🛡️ 賑濟：急調正宗代理金銀花原價賑濟街坊。", action: "handle50sResult('good_flu')" },
-                    { text: "📈 暴利：提價三倍並混入未經檢驗的野草藥材。", action: "handle50sResult('bad_flu')" }
-                ]);
-            }
-        }
-
-        function handle50sResult(type) {
-            let txt = "";
-            if (type === 'charity') { money += 50; reputation += 15; unlockBadge('b-penny'); txt = `<p class="funny-alert">🥳 口碑爆棚！小店客似雲來，解鎖【一仙水碗茶】圖鑑！</p>`; }
-            else if (type === 'greedy') { money += 150; reputation -= 25; playBeep('fail'); txt = `<p class="funny-alert">❌ 街坊反感！此時白米一磅才一毫，你一杯茶定價過高，商譽嚴重受損！</p>`; }
-            else if (type === 'good_flu') { 
-                lastEraImg = IMAGES.flos; 
-                money -= 50; reputation += 30; 
-                txt = `<p class="funny-alert">🩺 醫者仁心！大量使用正品【金銀花】消炎解毒，聲望大幅上升 30 點，成為街坊心中的守護者！</p>`; 
-            }
-            else if (type === 'bad_flu') { 
-                lastEraImg = IMAGES.poison_news; 
-                money += 250; reputation -= 35; playBeep('fail'); 
-                txt = `<p class="funny-alert">🚨 嚴重商譽事故！私商混入的毒草導致街坊大批中毒送院，遭到報紙點名批判！</p>`; 
-            }
-            render(txt, [{ text: "⏩ 邁向 1960 年代社交空間轉型", action: "goTo1960s()" }]);
-        }
-
-        function goTo1960s() {
-            currentEra = "1960年代";
-            lastEraImg = IMAGES.tv_era; 
-            let txt = `<h3>📺 1960年代：「貧民夜總會」與大眾娛樂中心</h3>
-            <p style="text-align:justify;">踏入60年代，黑白電視極度昂貴。市民和青年喜歡聚集在有電視、有點唱機的涼茶舖乘涼社交。你想採用哪種店鋪環境優化方案？</p>`;
-            render(txt, [
-                { text: "📺 方案 A：購置電視機與點唱機，提供舒適聊天社交座椅。", action: "handle60sResult('tv')" },
-                { text: "💬 方案 B：維持純喝茶狀態，不做任何跨界設施。", action: "handle60sResult('plain')" }
-            ]);
-        }
-
-        function handle60sResult(type) {
-            let txt = "";
-            if(type === 'tv') { 
-                lastEraImg = IMAGES.tv_crowd; 
-                money -= 120; reputation += 25; unlockBadge('b-night'); 
-                txt = `<h3>🎉 迎來全盛黃金時代！</h3><p class="funny-alert">街坊、青年密密麻麻圍在店裡聽歌看電視，店鋪成為真正的「社區社交中心」！解鎖【貧民夜總會】圖鑑！</p>`; 
-            } else { 
-                lastEraImg = IMAGES.chatting; 
-                money += 20; reputation -= 15; 
-                txt = `<h3>🙅 顧客逐步流失</h3><p class="funny-alert">年輕人都被隔壁配有時髦點唱機的店鋪搶走了，生意大打折扣。</p>`; 
-            }
-            render(txt, [{ text: "⚔️ 開啟「百寶格抓藥小遊戲」考核", action: "startHerbGame()" }]);
-        }
-
-        const scenarios_final = [
-            { title: "【患者一：紡織加班女工】", desc: "口苦、肝火旺、熬夜眼乾，急需對症清肝明目藥材。", correct: ["夏枯草", "銀菊露"], img: "xiakucao" },
-            { title: "【患者二：碼頭工人】", desc: "烈日暴曬，體液燥結，大便不暢，急需滑腸潤燥藥材。", correct: ["火麻仁"], img: "huomaren" }
         ];
 
-        function startHerbGame() {
-            currentEra = "互動配藥考核";
-            selectedHerbs = [];
-            lastEraImg = IMAGES.boiling; 
-            let s = scenarios_final[currentPatientScenario];
-            let txt = `<h3>${s.title}</h3>
-            <p style="text-align:justify; color:#0d47a1;"><b>💬 訴求：</b>${s.desc}</p>
-            <div class="herbs-cabinet">
-                <div class="herb-drawer" id="h-xia" onclick="toggleHerb('夏枯草', 'h-xia')">夏枯草</div>
-                <div class="herb-drawer" id="h-yin" onclick="toggleHerb('銀菊露', 'h-yin')">銀菊露</div>
-                <div class="herb-drawer" id="h-huo" onclick="toggleHerb('火麻仁', 'h-huo')">火麻仁</div>
-            </div>`;
-            render(txt, [{ text: "🟢 抓藥完畢，開始煎煮茶湯！", action: "checkHerbFormula()" }]);
+        // 啟動遊戲
+        function initGame() {
+            rep = 50;
+            funds = 500;
+            currentStage = 0;
+            selectedPot = "";
+            updateStatus();
+            loadStage();
         }
 
-        function toggleHerb(name, elementId) {
-            let idx = selectedHerbs.indexOf(name);
-            let el = document.getElementById(elementId);
-            if(idx > -1) { selectedHerbs.splice(idx, 1); el.classList.remove('selected'); } 
-            else { if (selectedHerbs.length >= 2) return; selectedHerbs.push(name); el.classList.add('selected'); }
-        }
-
-        function checkHerbFormula() {
-            let s = scenarios_final[currentPatientScenario];
-            let isCorrect = selectedHerbs.length === s.correct.length && selectedHerbs.every(h => s.correct.includes(h));
-            let txt = "";
-            if(isCorrect) { 
-                lastEraImg = s.img === "xiakucao" ? IMAGES.xiakucao : IMAGES.huomaren; 
-                money += 80; reputation += 20; 
-                txt = `<h3>👍 配藥完全正確！藥到病除！</h3><p class="funny-alert">完美展現非遺傳承人的本草專業！資產 +80，聲望 +20！</p>`; 
-            } else { 
-                money -= 30; reputation -= 25; playBeep('fail'); 
-                txt = `<h3>❌ 藥不對症！街坊脾胃受損！</h3><p class="funny-alert">配方失誤，正確應配伍：<b>${s.correct.join('+')}</b>。聲望 -25！</p>`; 
-            }
-            currentPatientScenario++;
-            if(currentPatientScenario < scenarios_final.length) { render(txt, [{ text: "⏩ 下一位街坊訴求", action: "startHerbGame()" }]); }
-            else { render(txt, [{ text: "⏩ 邁向 70-80 年代終極飲食衝擊與舖租危機", action: "goTo1970s()" }]); }
-        }
-
-        function goTo1970s() {
-            currentEra = "1970-1980年代";
-            lastEraImg = IMAGES.ice_innovation; 
-            let txt = `<h3>📉 西方飲食衝擊與中西交融自救</h3>
-            <p style="text-align:justify;">70年代西方碳酸汽水與高檔雪糕湧入香港，傳統水碗茶銷量暴跌。為了生存，你打算如何應對這種文化衝擊？</p>`;
-            render(txt, [
-                { text: "🍦 創新：跨界推出「廿八味涼茶雪糕」與紅豆冰，實行中西交融自救。", action: "handle70sResult('ice')" },
-                { text: "🪵 固守：拒絕西式甜品，堅持只提供傳統熱茶堂飲。", action: "handle70sResult('old')" }
-            ]);
-        }
-
-        function handle70sResult(type) {
-            let txt = "";
-            if(type === 'ice') {
-                lastEraImg = IMAGES.herbal_ice; 
-                money += 120; reputation += 15;
-                txt = `<h3>🍦 跨界轉型大成功！</h3><p class="funny-alert">創新的草本雪糕成功引發全港摩登青年打卡潮，利潤與知名度雙豐收！</p>`;
-                render(txt, [{ text: "⏩ 迎接包租婆地產加租考驗", action: "triggerLandladyCrisis()" }]);
-            } else {
-                money -= 100; reputation -= 15; playBeep('fail');
-                txt = `<h3>❌ 陷入經營低谷</h3><p class="funny-alert">店鋪客源被新式冰室與西餅店完全瓜分，資金極度緊張。</p>`;
-                render(txt, [{ text: "⏩ 迎接包租婆地產加租考驗", action: "triggerLandladyCrisis()" }]);
-            }
-        }
-
-        function triggerLandladyCrisis() {
-            lastEraImg = IMAGES.landlady; 
-            let txt = `<h3>🏢 城市重建與租金飛漲危機</h3>
-            <div class="landlady-dialog">
-                <h4>🗝️ 包租婆：</h4><p style="margin:0; font-style:italic;">「地產興旺，下個月舖租加三倍！交唔起就折埋老字號啦！」</p>
-            </div>
-            <p style="text-align:justify;">昂貴租金摧毀了大量街邊老店，瓶裝飲料正進佔各大便利店。你想如何拯救祖業？</p>`;
-            render(txt, [
-                { text: "🚀 現代化：斥資將涼茶研發為免煎顆粒沖劑與便利瓶裝，跳出實體舖限制。", action: "handleRentResult(true)" },
-                { text: "🪵 守舊：拒絕改變包裝形式，在原地苦苦支撐。", action: "handleRentResult(false)" }
-            ]);
-        }
-
-        function handleRentResult(isModern) {
-            if(isModern) { money -= 200; reputation += 30; unlockBadge('b-pack'); render(`<p class="funny-alert">✊ 絕處逢生！成功轉型免煎顆粒與瓶裝，解鎖圖鑑【現代顆粒沖劑】！</p>`, [{ text: "⏩ 穿越到現代活化", action: "goToModern()" }]); }
-            else { money = 0; playBeep('fail'); render(`<p class="funny-alert">💀 百年招牌宣告遺憾結業！固步自封敵不過時代洪流與高昂舖租！</p>`, [{ text: "🍁 時代巨輪·遺憾清盤 (點擊重試)", action: "showIntro()" }]); }
-        }
-
-        function goToModern() {
-            currentEra = "2020s 現代香港";
-            lastEraImg = IMAGES.heritage; 
-            let txt = `<h3>🏛️ 現代逆襲：國家級非物質文化遺產</h3>
-            <p style="text-align:justify;">香港涼茶正式列入國家級非遺項目！作為新一代繼承人，你認為哪種文創推廣方式才是非遺傳承的最高境界？</p>`;
-            render(txt, [
-                { text: "📜 A：主打防病強身、順應四時的「自然與宇宙知識」生活實踐（堅守底蘊）。", action: "endGame(true)" },
-                { text: "📸 B：純外觀網網紅打卡，淡化中醫藥理論和涼茶本身的非遺文化內涵。", action: "endGame(false)" }
-            ]);
-        }
-
-        function endGame(isSuccess) {
-            if(isSuccess) { reputation += 25; unlockBadge('b-concept'); } else { reputation -= 25; playBeep('fail'); }
+        // 更新頂部狀態（確保不爆分：上限 100%）
+        function updateStatus() {
+            // 限制聲望在 0 到 100% 之間
+            if (rep > 100) rep = 100;
+            if (rep < 0) rep = 0;
             
-            let evaluation = reputation >= 85 ? "👑 國家級非遺傳承大宗師" : reputation >= 60 ? "📜 涼茶文化守護者" : "⚒️ 涼茶業資神匠人";
-            let txt = `<h2>🏆 通關圓滿 傳承終章：${evaluation}</h2>
-            <p style="font-size:22px; color:#e65100; font-weight:bold; text-align:center;">🌟 最終跨世紀累積聲望：${reputation} 分！</p>
-            <p style="font-size:20px; color:#2e7d32; font-weight:bold; text-align:center;">💰 濟安堂剩餘資產：$${money}</p>
-            <div class="encyclopedia" style="background:#fff3e0; border-color:#ff9800; color:#e65100;">
-                <strong>🎓 汪靖琦、李卓穎同學與馮皓琳老師專題叮囑：</strong><br>
-                香港非遺文化強調涼茶是一種「防病強身的古老智慧與生活實踐」，唯有堅守底蘊，方能賦予老字號真正的文創活化空間。
-            </div>`;
-            render(txt, [{ text: "🎬 啟動跨世紀傳承謝幕盛典", action: "showCreditsScreen()" }]);
+            document.getElementById("reputation").innerText = rep;
+            document.getElementById("funds").innerText = funds;
         }
 
-        function triggerGameOver(reason) {
-            render(`<h3>💀 濟安堂：經營中止 💀</h3><p style="color:#d84315; font-weight:bold; text-align:center;">原因：${reason}</p>`, [{ text: "🔄 殫精竭慮·重整旗鼓 (點擊重來)", action: "showIntro()" }]);
+        // 載入關卡內容
+        function loadStage() {
+            if (currentStage >= stages.length) {
+                showEnding();
+                return;
+            }
+
+            const stage = stages[currentStage];
+            document.getElementById("year").innerText = stage.year;
+            document.getElementById("eraBadge").innerText = stage.badge;
+            document.getElementById("stageTitle").innerText = stage.title;
+            document.getElementById("stageText").innerText = stage.text;
+            document.getElementById("gameImage").src = stage.image;
+            document.getElementById("elfText").innerText = stage.elf;
+            document.getElementById("elfEmoji").innerText = "🧚‍♀️";
+
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+            document.getElementById("actionContainer").innerHTML = "";
+
+            if (stage.type === "normal") {
+                // 普通劇情關卡：顯示三個選項
+                stage.options.forEach((opt, idx) => {
+                    const btn = document.createElement("button");
+                    btn.className = "option-btn";
+                    btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}</span> ${opt.text}`;
+                    
+                    // 當滑鼠移上去或手指觸摸時，小精靈顯示預覽提示
+                    btn.onmouseenter = () => {
+                        document.getElementById("elfText").innerText = opt.elfComment;
+                    };
+                    btn.ontouchstart = () => {
+                        document.getElementById("elfText").innerText = opt.elfComment;
+                    };
+                    
+                    // 點擊選項執行
+                    btn.onclick = () => selectOption(opt);
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (stage.type === "recommend") {
+                // 特別關卡：掌櫃推薦飲用玩法
+                startRecommendStage(stage);
+            }
         }
 
-        function showCreditsScreen() {
-            document.getElementById('creditsScreen').style.display = 'block';
-            document.getElementById('creditsContainer').style.animation = 'scrollCredits 28s linear forwards';
+        // 處理普通關卡決策
+        function selectOption(option) {
+            rep += option.repEffect;
+            funds += option.fundEffect;
+            updateStatus();
+
+            // 顯示結果反饋
+            document.getElementById("stageText").innerHTML = `<strong>【決策結果】</strong><br>${option.feedback}`;
+            document.getElementById("elfText").innerText = option.elfComment;
+            
+            // 更換阿草小精靈的生動表情
+            if (option.repEffect > 0) {
+                document.getElementById("elfEmoji").innerText = "✨🤩✨";
+            } else {
+                document.getElementById("elfEmoji").innerText = "😰";
+            }
+
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = ""; // 清空選項
+
+            // 顯示前進下一步按鈕
+            const actionContainer = document.getElementById("actionContainer");
+            actionContainer.innerHTML = `<button class="next-btn" onclick="nextStage()">踏入下一個年代 ➔</button>`;
         }
 
-        function restartFromCredits() {
-            document.getElementById('creditsScreen').style.display = 'none';
-            showIntro();
+        // 掌櫃推薦飲用特別關
+        let currentPatientIndex = 0;
+        function startRecommendStage(stage) {
+            currentPatientIndex = 0;
+            loadPatient();
         }
 
-        showIntro();
+        function loadPatient() {
+            const stage = stages[currentStage];
+            const patient = stage.patients[currentPatientIndex];
+            
+            document.getElementById("stageTitle").innerText = `特別關：掌櫃診症 - 第 ${currentPatientIndex + 1} 位顧客`;
+            document.getElementById("stageText").innerHTML = `<strong>顧客：${patient.name}</strong><br><br>${patient.symptom}<br><br><em>請在下方選擇一罐已熬製好的經典涼茶推薦給她/他（單選，不可混配）：</em>`;
+            
+            const optionsContainer = document.getElementById("optionsContainer");
+            optionsContainer.innerHTML = "";
+            
+            // 創建 3 個精美銅壺選項
+            const recommendPanel = document.createElement("div");
+            recommendPanel.className = "recommend-panel";
+            
+            patient.options.forEach(pot => {
+                const potDiv = document.createElement("div");
+                potDiv.className = "pot-option";
+                potDiv.innerHTML = `
+                    <span class="pot-icon">🏺</span>
+                    <div class="pot-name">${pot.name}</div>
+                    <div class="pot-desc">${pot.desc}</div>
+                `;
+                potDiv.onclick = () => {
+                    // 單選效果
+                    document.querySelectorAll(".pot-option").forEach(el => el.classList.remove("selected"));
+                    potDiv.classList.add("selected");
+                    selectedPot = pot.id;
+                };
+                recommendPanel.appendChild(potDiv);
+            });
+            optionsContainer.appendChild(recommendPanel);
+
+            // 提交推薦按鈕
+            const actionContainer = document.getElementById("actionContainer");
+            actionContainer.innerHTML = `<button class="next-btn" onclick="submitRecommendation()">奉上涼茶 ➔</button>`;
+        }
+
+        function submitRecommendation() {
+            if (!selectedPot) {
+                alert("請先選擇一罐涼茶奉上給客人！");
+                return;
+            }
+
+            const stage = stages[currentStage];
+            const patient = stage.patients[currentPatientIndex];
+            const optionsContainer = document.getElementById("optionsContainer");
+            const actionContainer = document.getElementById("actionContainer");
+
+            optionsContainer.innerHTML = ""; // 清空銅壺
+
+            if (selectedPot === patient.correct) {
+                rep += 15;
+                funds += 30;
+                document.getElementById("stageText").innerHTML = `<strong>【診症成功】</strong><br>${patient.feedbackCorrect}`;
+                document.getElementById("elfEmoji").innerText = "🥰";
+                document.getElementById("elfText").innerText = "掌櫃果然好眼光！對症下藥，手到病除，街坊們對濟安堂的信心大增！";
+            } else {
+                rep -= 15;
+                document.getElementById("stageText").innerHTML = `<strong>【對症出錯】</strong><br>${patient.feedbackIncorrect}`;
+                document.getElementById("elfEmoji").innerText = "😭";
+                document.getElementById("elfText").innerText = "哎呀，這涼茶跟客人的病症不符合，客人喝完不舒服，砸了招牌啦……";
+            }
+            updateStatus();
+            selectedPot = ""; // 重置選擇
+
+            // 判斷是否有下一位病人
+            if (currentPatientIndex < stage.patients.length - 1) {
+                currentPatientIndex++;
+                actionContainer.innerHTML = `<button class="next-btn" onclick="loadPatient()">診治下一位顧客 ➔</button>`;
+            } else {
+                actionContainer.innerHTML = `<button class="next-btn" onclick="nextStage()">完成診症，進入1960年代 ➔</button>`;
+            }
+        }
+
+        // 進入下一個關卡
+        function nextStage() {
+            currentStage++;
+            loadStage();
+        }
+
+        // 顯示最終謝幕與致謝
+        function showEnding() {
+            document.getElementById("year").innerText = "2020s+";
+            document.getElementById("gameImage").src = IMAGES.ending;
+            document.getElementById("eraBadge").innerText = "世代傳承";
+            
+            const gameBody = document.getElementById("gameBody");
+            gameBody.innerHTML = `
+                <div class="story-card" style="text-align: center;">
+                    <div class="story-title" style="font-size: 1.4rem;">🎉 恭喜你！濟安堂傳奇代代流傳！</div>
+                    <p class="story-text" style="margin: 15px 0;">
+                        在你的英明經營下，濟安堂歷經了 1940 年代的禁運重建、50 年代一仙茶的流感仁心、60 年代電視娛樂中心、70 年代大膽創新的「草本涼茶雪糕」，最終在 2020 年代完美活化了「國家級非物質文化遺產」。<br><br>
+                        你成功向世人證明：<strong>涼茶不是落後的代名詞，而是千百年來華夏兒女順應自然、四時養生的偉大生活智慧實踐！</strong>
+                    </p>
+                    <div style="font-size: 1.1rem; font-weight: bold; color: var(--success-color); margin: 10px 0;">
+                        最終店舖商譽聲望：${rep}% <br>
+                        最終店舖家族資產：$${funds}
+                    </div>
+                </div>
+
+                <!-- 老師指定與感謝名單 -->
+                <div class="story-card credits-container">
+                    <div class="credit-title">🎬 製作人員與感謝名單</div>
+                    
+                    <div class="credit-item">
+                        <div class="credit-role">項目策劃與文創設計</div>
+                        <div class="credit-name">東華三院邱子田紀念中學<br>汪靖琦、李卓穎</div>
+                    </div>
+
+                    <div class="credit-item">
+                        <div class="credit-role">學術顧問與歷史考證指導</div>
+                        <div class="credit-name">馮皓琳 老師</div>
+                    </div>
+
+                    <div class="credit-item">
+                        <div class="credit-role">文獻理論參考</div>
+                        <div class="credit-name">鄧家宙博士著作《香港非物質文化遺產系列：涼茶》</div>
+                    </div>
+
+                    <div class="credit-item">
+                        <div class="credit-role">AI 圖像生成技術支援</div>
+                        <div class="credit-name">豆包 AI</div>
+                    </div>
+
+                    <div class="credit-item">
+                        <div class="credit-role">歷史影像與視覺素材來源</div>
+                        <div class="credit-name">Google 歷史文獻檢索</div>
+                    </div>
+
+                    <div class="credit-item">
+                        <div class="credit-role">互動邏輯、代碼除錯與歷史考證協作</div>
+                        <div class="credit-name">Gemini AI</div>
+                    </div>
+
+                    <div class="credit-item">
+                        <div class="credit-role">數位網頁技術支援</div>
+                        <div class="credit-name">CodePen 交互式文創引擎</div>
+                    </div>
+
+                    <button class="reset-btn" onclick="location.reload()">🔄 重新經營濟安堂</button>
+                </div>
+            `;
+        }
+
+        // 背景音樂控制
+        function toggleMusic() {
+            const music = document.getElementById("bgMusic");
+            const btn = document.getElementById("musicToggle");
+            if (musicPlaying) {
+                music.pause();
+                btn.innerText = "🔇";
+                musicPlaying = false;
+            } else {
+                music.play().catch(e => console.log("音樂播放需要使用者點擊網頁觸發。"));
+                btn.innerText = "🎵";
+                musicPlaying = true;
+            }
+        }
+
+        // 初始化
+        window.onload = () => {
+            initGame();
+        };
     </script>
 </body>
 </html>
