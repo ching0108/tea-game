@@ -2,21 +2,125 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>非物質文化遺產：涼茶舖經營大亨 (傳承典藏版 5.7)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         /* 核心佈局與顏色設定 */
-        :root { --primary-color: #5d4037; --bg-color: #efebe9; --neon-color: #ff1100; }
-        body { background: var(--bg-color); color: #3e2723; font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif; text-align: center; padding: 10px; margin: 0; min-height: 100vh; padding-bottom: 120px; }
-        .neon-sign { background: #212121; color: #fff; padding: 12px; border-radius: 8px; border: 3px solid var(--neon-color); box-shadow: 0 0 15px var(--neon-color), inset 0 0 10px var(--neon-color); font-weight: bold; letter-spacing: 3px; max-width: 530px; margin: 0 auto 15px auto; text-shadow: 0 0 5px var(--neon-color); font-size: 18px; }
-        .game-container { max-width: 550px; margin: 0 auto; position: relative; }
-        .game-box { background: #fffdf7; padding: 25px; border-radius: 15px; border: 4px solid var(--primary-color); box-shadow: 0 10px 20px rgba(0,0,0,0.19); position: relative; text-align: left; }
-        .status-container { background: #f5f5f5; border-radius: 10px; padding: 10px; margin-bottom: 15px; border: 2px solid #bcaaa4; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-weight: bold; font-size: 14px; }
-        .stat-item { display: flex; flex-direction: column; align-items: center; }
-        .progress-bg { background: #e0e0e0; border-radius: 5px; height: 10px; width: 100%; margin-top: 4px; overflow: hidden; border: 1px solid #9e9e9e; }
-        .progress-fill { height: 100%; width: 50%; transition: width 0.4s ease; }
-        .audio-control-bar { display: flex; justify-content: space-between; align-items: center; background: #d7ccc8; padding: 5px 12px; border-radius: 6px; margin-bottom: 10px; font-size: 12px; font-weight: bold; }
-        .mute-btn { background: #5d4037; color: #fff; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; width: auto; margin: 0; }
+        :root { 
+            --primary-color: #5d4037; 
+            --bg-color: #efebe9; 
+            --neon-color: #ff1100; 
+        }
+        
+        body { 
+            background: var(--bg-color); 
+            color: #3e2723; 
+            font-family: 'Noto Serif TC', 'PingFang HK', 'Microsoft JhengHei', serif; 
+            text-align: center; 
+            padding: 10px; 
+            margin: 0; 
+            min-height: 100vh; 
+            padding-bottom: 120px; 
+        }
+        
+        .neon-sign { 
+            background: #212121; 
+            color: #fff; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 3px solid var(--neon-color); 
+            box-shadow: 0 0 15px var(--neon-color), inset 0 0 10px var(--neon-color); 
+            font-weight: bold; 
+            letter-spacing: 3px; 
+            max-width: 530px; 
+            margin: 0 auto 15px auto; 
+            text-shadow: 0 0 5px var(--neon-color); 
+            font-size: 18px; 
+        }
+        
+        .game-container { 
+            max-width: 550px; 
+            margin: 0 auto; 
+            position: relative; 
+        }
+        
+        .game-box { 
+            background: #fffdf7; 
+            padding: 25px; 
+            border-radius: 15px; 
+            border: 4px solid var(--primary-color); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19); 
+            position: relative; 
+            text-align: left; 
+        }
+        
+        .status-container { 
+            background: #f5f5f5; 
+            border-radius: 10px; 
+            padding: 10px; 
+            margin-bottom: 15px; 
+            border: 2px solid #bcaaa4; 
+        }
+        
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            font-weight: bold; 
+            font-size: 14px; 
+        }
+        
+        .stat-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        
+        .progress-bg { 
+            background: #e0e0e0; 
+            border-radius: 5px; 
+            height: 10px; 
+            width: 100%; 
+            margin-top: 4px; 
+            overflow: hidden; 
+            border: 1px solid #9e9e9e; 
+        }
+        
+        .progress-fill { 
+            height: 100%; 
+            width: 50%; 
+            transition: width 0.4s ease; 
+        }
+        
+        .audio-control-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #d7ccc8; 
+            padding: 5px 12px; 
+            border-radius: 6px; 
+            margin-bottom: 10px; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+        
+        .mute-btn { 
+            background: #5d4037; 
+            color: #fff; 
+            border: none; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 11px; 
+            width: auto; 
+            margin: 0; 
+        }
         
         .image-stage { 
             background-size: contain !important;
@@ -34,19 +138,89 @@
         }
 
         /* 診症銅壺單選樣式 */
-        .pot-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; }
-        .pot-option { background: #fff8e1; border: 2px solid #ffb300; border-radius: 6px; padding: 10px 5px; text-align: center; cursor: pointer; font-weight: bold; font-size: 12px; box-shadow: 0 3px 0 #ff8f00; transition: all 0.1s; }
-        .pot-option.selected { background: #ffe082; border-color: #e65100; box-shadow: 0 3px 0 #b33900; color: #e65100; }
-        .pot-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+        .pot-panel { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+            margin: 15px 0; 
+        }
+        
+        .pot-option { 
+            background: #fff8e1; 
+            border: 2px solid #ffb300; 
+            border-radius: 6px; 
+            padding: 10px 5px; 
+            text-align: center; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 12px; 
+            box-shadow: 0 3px 0 #ff8f00; 
+            transition: all 0.1s; 
+        }
+        
+        .pot-option.selected { 
+            background: #ffe082; 
+            border-color: #e65100; 
+            box-shadow: 0 3px 0 #b33900; 
+            color: #e65100; 
+        }
+        
+        .pot-icon { 
+            font-size: 24px; 
+            display: block; 
+            margin-bottom: 4px; 
+        }
 
-        .collection-panel { background: #fffde7; border: 2px dashed #fbc02d; border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 13px; }
-        .collection-title { font-weight: bold; color: #f57f17; display: flex; justify-content: space-between; }
-        .badge-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
-        .badge { background: #cfd8dc; color: #78909c; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-        .badge.unlocked { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+        .collection-panel { 
+            background: #fffde7; 
+            border: 2px dashed #fbc02d; 
+            border-radius: 8px; 
+            padding: 10px; 
+            margin-top: 15px; 
+            font-size: 13px; 
+        }
+        
+        .collection-title { 
+            font-weight: bold; 
+            color: #f57f17; 
+            display: flex; 
+            justify-content: space-between; 
+        }
+        
+        .badge-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 5px; 
+            margin-top: 5px; 
+        }
+        
+        .badge { 
+            background: #cfd8dc; 
+            color: #78909c; 
+            padding: 3px 6px; 
+            border-radius: 4px; 
+            font-size: 11px; 
+            font-weight: bold; 
+        }
+        
+        .badge.unlocked { 
+            background: #fff3e0; 
+            color: #e65100; 
+            border: 1px solid #ffcc80; 
+        }
 
         /* 可愛的小草精靈常駐樣式 */
-        .fairy-container { position: fixed; bottom: 35px; right: 15px; display: flex; flex-direction: column; align-items: center; z-index: 1500; cursor: pointer; }
+        .fairy-container { 
+            position: fixed; 
+            bottom: 35px; 
+            right: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            z-index: 1500; 
+            cursor: pointer; 
+        }
+        
         .fairy-avatar { 
             width: 75px; 
             height: 75px; 
@@ -58,74 +232,544 @@
             animation: floatFairy 3s ease-in-out infinite; 
             position: relative;
         }
-        @keyframes floatFairy { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
-        .fairy-avatar::after { content: '💡暖心提示'; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #2e7d32; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; border: 1px solid white; white-space: nowrap; }
-        .fairy-bubble { display: none; position: absolute; bottom: 85px; right: 5px; width: 240px; background: #ffffff; border: 2px solid #4caf50; border-radius: 12px; padding: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-size: 13px; text-align: left; line-height: 1.6; color: #2d5a2f; }
-        .fairy-bubble::after { content: ''; position: absolute; bottom: -10px; right: 30px; border-width: 10px 10px 0; border-style: solid; border-color: #4caf50 transparent; }
-        .fairy-bubble-title { font-weight: bold; color: #1b5e20; margin-bottom: 6px; border-bottom: 1px dashed #cbdccb; padding-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        
+        @keyframes floatFairy { 
+            0% { transform: translateY(0px); } 
+            50% { transform: translateY(-8px); } 
+            100% { transform: translateY(0px); } 
+        }
+        
+        .fairy-avatar::after { 
+            content: '💡暖心提示'; 
+            position: absolute; 
+            bottom: -8px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: #2e7d32; 
+            color: white; 
+            font-size: 10px; 
+            padding: 2px 6px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            border: 1px solid white; 
+            white-space: nowrap; 
+        }
+        
+        .fairy-bubble { 
+            display: none; 
+            position: absolute; 
+            bottom: 85px; 
+            right: 5px; 
+            width: 240px; 
+            background: #ffffff; 
+            border: 2px solid #4caf50; 
+            border-radius: 12px; 
+            padding: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            font-size: 13px; 
+            text-align: left; 
+            line-height: 1.6; 
+            color: #2d5a2f; 
+        }
+        
+        .fairy-bubble::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: -10px; 
+            right: 30px; 
+            border-width: 10px 10px 0; 
+            border-style: solid; 
+            border-color: #4caf50 transparent; 
+        }
+        
+        .fairy-bubble-title { 
+            font-weight: bold; 
+            color: #1b5e20; 
+            margin-bottom: 6px; 
+            border-bottom: 1px dashed #cbdccb; 
+            padding-bottom: 4px; 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+        }
 
         /* Cooking Mama 互動小遊戲樣式 */
-        .interaction-stage { background: #efebe9; border: 3px double var(--primary-color); border-radius: 12px; padding: 15px; text-align: center; margin: 15px 0; }
-        .interaction-title { font-weight: bold; color: #795548; font-size: 16px; margin-bottom: 10px; }
+        .interaction-stage { 
+            background: #efebe9; 
+            border: 3px double var(--primary-color); 
+            border-radius: 12px; 
+            padding: 15px; 
+            text-align: center; 
+            margin: 15px 0; 
+        }
+        
+        .interaction-title { 
+            font-weight: bold; 
+            color: #795548; 
+            font-size: 16px; 
+            margin-bottom: 10px; 
+        }
         
         /* 1. 研磨小遊戲 */
-        .pestle-container { position: relative; width: 120px; height: 120px; margin: 0 auto; cursor: pointer; }
-        .bowl-bg { width: 100%; height: 100%; background: radial-gradient(circle, #d7ccc8 60%, #8d6e63 100%); border-radius: 50%; border: 4px solid #5d4037; box-shadow: inset 0 5px 10px rgba(0,0,0,0.3); }
-        .herbs-in-bowl { position: absolute; top: 30px; left: 30px; width: 60px; height: 60px; border-radius: 50%; transition: opacity 0.5s; background: repeating-linear-gradient(45deg, #a1887f, #a1887f 10px, #8d6e63 10px, #8d6e63 20px); }
-        .herbs-ground { position: absolute; top: 30px; left: 30px; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #5d4037 60%, #3e2723 100%); opacity: 0; transition: opacity 0.5s; }
-        .pestle-icon { position: absolute; top: 10px; left: 45px; font-size: 40px; transform-origin: bottom center; transition: transform 0.1s; pointer-events: none; }
+        .pestle-container { 
+            position: relative; 
+            width: 120px; 
+            height: 120px; 
+            margin: 0 auto; 
+            cursor: pointer; 
+        }
+        
+        .bowl-bg { 
+            width: 100%; 
+            height: 100%; 
+            background: radial-gradient(circle, #d7ccc8 60%, #8d6e63 100%); 
+            border-radius: 50%; 
+            border: 4px solid #5d4037; 
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.3); 
+        }
+        
+        .herbs-in-bowl { 
+            position: absolute; 
+            top: 30px; 
+            left: 30px; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            transition: opacity 0.5s; 
+            background: repeating-linear-gradient(45deg, #a1887f, #a1887f 10px, #8d6e63 10px, #8d6e63 20px); 
+        }
+        
+        .herbs-ground { 
+            position: absolute; 
+            top: 30px; 
+            left: 30px; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: radial-gradient(circle, #5d4037 60%, #3e2723 100%); 
+            opacity: 0; 
+            transition: opacity 0.5s; 
+        }
+        
+        .pestle-icon { 
+            position: absolute; 
+            top: 10px; 
+            left: 45px; 
+            font-size: 40px; 
+            transform-origin: bottom center; 
+            transition: transform 0.1s; 
+            pointer-events: none; 
+        }
         
         /* 2. 控溫小遊戲 */
-        .temp-meter { width: 30px; height: 150px; background: #e0e0e0; margin: 0 auto; position: relative; border-radius: 15px; border: 3px solid #5d4037; }
-        .temp-fill { width: 100%; height: 20%; background: #4caf50; position: absolute; bottom: 0; left: 0; border-radius: 0 0 10px 10px; transition: height 0.2s, background-color 0.2s; }
-        .target-zone { position: absolute; width: 100%; border-left: 5px solid #ff9800; border-right: 5px solid #ff9800; box-sizing: border-box; }
-        .target-zone.wu { height: 25px; bottom: 100px; background: rgba(244, 67, 54, 0.2); }
-        .target-zone.wen { height: 35px; bottom: 40px; background: rgba(255, 152, 0, 0.2); }
-        .zone-label { position: absolute; right: -75px; font-size: 11px; font-weight: bold; color: #5d4037; }
+        .temp-meter { 
+            width: 30px; 
+            height: 150px; 
+            background: #e0e0e0; 
+            margin: 0 auto; 
+            position: relative; 
+            border-radius: 15px; 
+            border: 3px solid #5d4037; 
+        }
+        
+        .temp-fill { 
+            width: 100%; 
+            height: 20%; 
+            background: #4caf50; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            border-radius: 0 0 10px 10px; 
+            transition: height 0.2s, background-color 0.2s; 
+        }
+        
+        .target-zone { 
+            position: absolute; 
+            width: 100%; 
+            border-left: 5px solid #ff9800; 
+            border-right: 5px solid #ff9800; 
+            box-sizing: border-box; 
+        }
+        
+        .target-zone.wu { 
+            height: 25px; 
+            bottom: 100px; 
+            background: rgba(244, 67, 54, 0.2); 
+        }
+        
+        .target-zone.wen { 
+            height: 35px; 
+            bottom: 40px; 
+            background: rgba(255, 152, 0, 0.2); 
+        }
+        
+        .zone-label { 
+            position: absolute; 
+            right: -75px; 
+            font-size: 11px; 
+            font-weight: bold; 
+            color: #5d4037; 
+        }
         
         /* 3. 倒茶平衡小遊戲 */
-        .pot-cup-wrapper { display: flex; justify-content: space-around; align-items: flex-end; height: 180px; position: relative; margin-top: 10px; }
-        .teapot-graphic { font-size: 50px; transition: transform 0.3s; transform-origin: bottom right; position: absolute; left: 80px; top: 10px; }
-        .teapot-graphic.pouring { transform: rotate(-40deg); }
-        .tea-stream { width: 4px; background: #795548; position: absolute; left: 160px; top: 55px; height: 0; transition: height 0.1s; }
-        .tea-cup { width: 90px; height: 60px; background: #fff; border: 4px solid #1565c0; border-radius: 0 0 35px 35px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.15); overflow: hidden; margin: 0 auto; }
-        .cup-liquid { width: 100%; height: 0%; background: #5d4037; position: absolute; bottom: 0; left: 0; transition: height 0.1s; }
-        .cup-perfect-line { position: absolute; bottom: 85%; width: 100%; border-top: 2px dashed #4caf50; }
-        .cup-over-line { position: absolute; bottom: 98%; width: 100%; border-top: 2px solid #f44336; }
+        .pot-cup-wrapper { 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: flex-end; 
+            height: 180px; 
+            position: relative; 
+            margin-top: 10px; 
+        }
+        
+        .teapot-graphic { 
+            font-size: 50px; 
+            transition: transform 0.3s; 
+            transform-origin: bottom right; 
+            position: absolute; 
+            left: 80px; 
+            top: 10px; 
+        }
+        
+        .teapot-graphic.pouring { 
+            transform: rotate(-40deg); 
+        }
+        
+        .tea-stream { 
+            width: 4px; 
+            background: #795548; 
+            position: absolute; 
+            left: 160px; 
+            top: 55px; 
+            height: 0; 
+            transition: height 0.1s; 
+        }
+        
+        .tea-cup { 
+            width: 90px; 
+            height: 60px; 
+            background: #fff; 
+            border: 4px solid #1565c0; 
+            border-radius: 0 0 35px 35px; 
+            position: relative; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
+            overflow: hidden; 
+            margin: 0 auto; 
+        }
+        
+        .cup-liquid { 
+            width: 100%; 
+            height: 0%; 
+            background: #5d4037; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            transition: height 0.1s; 
+        }
+        
+        .cup-perfect-line { 
+            position: absolute; 
+            bottom: 85%; 
+            width: 100%; 
+            border-top: 2px dashed #4caf50; 
+        }
+        
+        .cup-over-line { 
+            position: absolute; 
+            bottom: 98%; 
+            width: 100%; 
+            border-top: 2px solid #f44336; 
+        }
 
         /* 新手秘笈卷軸樣式 */
-        .scroll-container { background: #fff3e0; border: 4px double #d84315; border-radius: 15px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.15); margin: 15px 0; display: none; text-align: left; }
-        .scroll-title { font-size: 18px; font-weight: bold; color: #d84315; border-bottom: 2px dashed #ffb74d; padding-bottom: 6px; margin-bottom: 12px; text-align: center; }
-        .scroll-page { display: none; }
-        .scroll-page.active { display: block; }
-        .scroll-img { width: 85px; height: 85px; border-radius: 50%; float: right; margin-left: 10px; border: 2px solid #ffb74d; }
-        .scroll-nav { display: flex; justify-content: space-between; margin-top: 15px; }
-        .scroll-btn { background: #e64a19; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .scroll-container { 
+            background: #fff3e0; 
+            border: 4px double #d84315; 
+            border-radius: 15px; 
+            padding: 15px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); 
+            margin: 15px 0; 
+            display: none; 
+            text-align: left; 
+        }
+        
+        .scroll-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #d84315; 
+            border-bottom: 2px dashed #ffb74d; 
+            padding-bottom: 6px; 
+            margin-bottom: 12px; 
+            text-align: center; 
+        }
+        
+        .scroll-page { 
+            display: none; 
+        }
+        
+        .scroll-page.active { 
+            display: block; 
+        }
+        
+        .scroll-img { 
+            width: 85px; 
+            height: 85px; 
+            border-radius: 50%; 
+            float: right; 
+            margin-left: 10px; 
+            border: 2px solid #ffb74d; 
+        }
+        
+        .scroll-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 15px; 
+        }
+        
+        .scroll-btn { 
+            background: #e64a19; 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
 
         /* 謝幕與發光字體 */
-        .reputation-num { transition: all 0.3s ease; }
-        .reputation-num.super-legendary { color: #ffd700 !important; font-weight: 900; text-shadow: 0 0 8px #ffd700, 0 0 15px #ffaa00; animation: pulseText 1.5s infinite alternate; }
-        @keyframes pulseText { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-        .legend-badge { display: inline-block; background: linear-gradient(45deg, #ffd700, #ffa500); color: #fff; padding: 2px 6px; font-size: 10px; border-radius: 4px; font-weight: bold; margin-left: 5px; box-shadow: 0 0 5px #ffd700; animation: bounce 1s infinite alternate; }
-        @keyframes bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
-
-        .credits-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0c0a09; color: #e7e5e4; z-index: 2000; overflow: hidden; }
-        .credits-container { position: absolute; width: 100%; top: 100%; animation: scrollCredits 28s linear forwards; text-align: center; padding-bottom: 120px; }
-        @keyframes scrollCredits { 0% { top: 100%; } 100% { top: -150%; } }
-        .credits-section { margin: 45px 0; }
-        .credits-title { color: #d97706; font-size: 19px; font-weight: bold; letter-spacing: 3px; margin-bottom: 12px; }
-        .credits-name { font-size: 16px; line-height: 2.0; color: #f5f5f4; }
-        .credits-restart-btn { background: #d97706; color: #fff; border: none; padding: 12px 28px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 30px; }
+        .reputation-num { 
+            transition: all 0.3s ease; 
+        }
         
-        .landlady-dialog { background: #fff3e0; border: 2px solid #ffb74d; border-radius: 12px; padding: 12px; margin: 15px 0; position: relative; }
-        .encyclopedia { background: #e8f5e9; border-left: 5px solid #2e7d32; padding: 12px; margin: 15px 0; border-radius: 4px; font-size: 13px; }
-        button { background: #8d6e63; color: white; border: none; padding: 12px; margin: 6px 0; cursor: pointer; width: 100%; border-radius: 8px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 0 #5d4037; text-align: left;}
-        button:active { transform: translateY(3px); box-shadow: 0 1px 0 #5d4037; }
-        .funny-alert { color: #d84315; font-weight: bold; font-size: 15px; margin: 10px 0; }
-        h3 { margin: 0; color: var(--primary-color); padding-bottom: 6px; font-size: 17px; text-align: center; }
+        .reputation-num.super-legendary { 
+            color: #ffd700 !important; 
+            font-weight: 900; 
+            text-shadow: 0 0 8px #ffd700, 0 0 15px #ffaa00; 
+            animation: pulseText 1.5s infinite alternate; 
+        }
+        
+        @keyframes pulseText { 
+            0% { transform: scale(1); } 
+            100% { transform: scale(1.1); } 
+        }
+        
+        .legend-badge { 
+            display: inline-block; 
+            background: linear-gradient(45deg, #ffd700, #ffa500); 
+            color: #fff; 
+            padding: 2px 6px; 
+            font-size: 10px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            margin-left: 5px; 
+            box-shadow: 0 0 5px #ffd700; 
+            animation: bounce 1s infinite alternate; 
+        }
+        
+        @keyframes bounce { 
+            0% { transform: translateY(0); } 
+            100% { transform: translateY(-3px); } 
+        }
+
+        .credits-screen { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #0c0a09; 
+            color: #e7e5e4; 
+            z-index: 2000; 
+            overflow: hidden; 
+        }
+        
+        .credits-container { 
+            position: absolute; 
+            width: 100%; 
+            top: 100%; 
+            animation: scrollCredits 28s linear forwards; 
+            text-align: center; 
+            padding-bottom: 120px; 
+        }
+        
+        @keyframes scrollCredits { 
+            0% { top: 100%; } 
+            100% { top: -150%; } 
+        }
+        
+        .credits-section { 
+            margin: 45px 0; 
+        }
+        
+        .credits-title { 
+            color: #d97706; 
+            font-size: 19px; 
+            font-weight: bold; 
+            letter-spacing: 3px; 
+            margin-bottom: 12px; 
+        }
+        
+        .credits-name { 
+            font-size: 16px; 
+            line-height: 2.0; 
+            color: #f5f5f4; 
+        }
+        
+        .credits-restart-btn { 
+            background: #d97706; 
+            color: #fff; 
+            border: none; 
+            padding: 12px 28px; 
+            font-size: 14px; 
+            font-weight: bold; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin-top: 30px; 
+        }
+        
+        .landlady-dialog { 
+            background: #fff3e0; 
+            border: 2px solid #ffb74d; 
+            border-radius: 12px; 
+            padding: 12px; 
+            margin: 15px 0; 
+            position: relative; 
+        }
+        
+        .encyclopedia { 
+            background: #e8f5e9; 
+            border-left: 5px solid #2e7d32; 
+            padding: 12px; 
+            margin: 15px 0; 
+            border-radius: 4px; 
+            font-size: 13px; 
+        }
+        
+        button { 
+            background: #8d6e63; 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            margin: 6px 0; 
+            cursor: pointer; 
+            width: 100%; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 0 #5d4037; 
+            text-align: left;
+        }
+        
+        button:active { 
+            transform: translateY(3px); 
+            box-shadow: 0 1px 0 #5d4037; 
+        }
+        
+        .funny-alert { 
+            color: #d84315; 
+            font-weight: bold; 
+            font-size: 15px; 
+            margin: 10px 0; 
+        }
+        
+        h3 { 
+            margin: 0; 
+            color: var(--primary-color); 
+            padding-bottom: 6px; 
+            font-size: 17px; 
+            text-align: center; 
+        }
         
         /* 嚴謹謙虛的角落免責聲明欄 */
-        .footer-disclaimer { position: fixed; bottom: 0; right: 0; left: 0; background: rgba(33, 33, 33, 0.95); color: #b0bec5; font-size: 11px; padding: 8px 12px; text-align: center; z-index: 1000; line-height: 1.5; border-top: 1px solid #37474f; }
+        .footer-disclaimer { 
+            position: fixed; 
+            bottom: 0; 
+            right: 0; 
+            left: 0; 
+            background: rgba(33, 33, 33, 0.95); 
+            color: #b0bec5; 
+            font-size: 11px; 
+            padding: 8px 12px; 
+            text-align: center; 
+            z-index: 1000; 
+            line-height: 1.5; 
+            border-top: 1px solid #37474f; 
+        }
+
+        /* ==========================================
+           🏆 排行榜與名號登錄自定義專屬樣式
+           ========================================== */
+        .ancient-input {
+            border: 2px solid var(--primary-color);
+            background-color: #fdfcf7;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-family: 'Noto Serif TC', serif;
+            text-align: center;
+            border-radius: 6px;
+            width: 250px;
+            margin-bottom: 10px;
+            color: #3e2723;
+        }
+
+        .leaderboard-board {
+            width: 100%;
+            background: #fff8eb;
+            border: 4px double #b58d53;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: inset 0 0 10px rgba(181, 141, 83, 0.2);
+            box-sizing: border-box;
+        }
+
+        .leaderboard-title {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #b58d53;
+            padding-bottom: 6px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            color: var(--primary-color);
+            border-bottom: 2px solid #d1b89d;
+            padding: 6px;
+        }
+
+        td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px dashed #e8dcc4;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(217, 194, 158, 0.1);
+        }
+
+        .gold-rank {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+
+        .congrats-flash {
+            animation: flash 1.5s infinite ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -142,32 +786,27 @@
 
         <div class="game-box" id="game"></div>
 
-        <!-- 新手村秘笈卷軸 -->
         <div class="scroll-container" id="secretScroll">
             <div class="scroll-title">📜 濟安堂 · 阿草本草秘笈</div>
             
-            <!-- 第一頁 -->
             <div class="scroll-page active" id="sp1">
                 <img class="scroll-img" src="https://i.imgs.ovh/2026/07/16/413622494cfc2c1d1280003f1df0caaa.jpg">
                 <p style="font-weight: bold; color: #e64a19; margin-top: 0;">第一章：店舖兩大寶</p>
-                <p style="font-size: 13px; line-height: 1.6;">以前的涼茶舖，門口一定擺著一兩尊擦得金光閃閃的<b>「膽形大銅壺」</b>，這就是百年老字號的核心招牌！而且涼茶很苦，良心掌櫃在顧客堂飲完後，通常會奉上一顆酸甜的<b>「山楂涼果」</b>給街坊解苦，這就是嶺南特有的人情味與誠信形象。</p>
+                <p style="font-size: 13px; line-height: 1.6;">以前的涼茶舖，門口一定擺著一兩尊擦得金光閃閃的<b>「膽形大銅壺」</b>，這就是百年老字號的核心招牌！核心招牌！而且涼茶很苦，良心掌櫃在顧客堂飲完後，通常會奉上一顆酸甜的<b>「山楂涼果」</b>給街坊解苦，這就是嶺南特有的人情味與誠信形象。</p>
             </div>
 
-            <!-- 第二頁 -->
             <div class="scroll-page" id="sp2">
                 <img class="scroll-img" src="https://i.imgs.ovh/2026/07/16/413622494cfc2c1d1280003f1df0caaa.jpg">
                 <p style="font-weight: bold; color: #e64a19; margin-top: 0;">第二章：什麼是「南北行」？</p>
                 <p style="font-size: 13px; line-height: 1.6;">在香港開埠初期，上環一帶聚集了許多經營南北地中藥材與物資進出口貿易的商號，俗稱<b>「南北行」</b>。在特殊物資短缺時期，他們利用東南亞（泰國、星馬）的轉口渠道，千方百計將安全合格的中藥運進香港，是支撐全港市民健康的重要生命線。</p>
             </div>
 
-            <!-- 第三頁 -->
             <div class="scroll-page" id="sp3">
                 <img class="scroll-img" src="https://i.imgs.ovh/2026/07/16/413622494cfc2c1d1280003f1df0caaa.jpg">
                 <p style="font-weight: bold; color: #e64a19; margin-top: 0;">第三章：二十四節氣與防病智慧</p>
                 <p style="font-size: 13px; line-height: 1.6;">嶺南氣候濕熱，先人順應四時氣候與節氣變遷，利用中草藥預防疾病。涼茶入選國家級非物質文化遺產的核心，正是這套順應自然的<b>「自然界和宇宙知識與實踐」</b>。在動盪的歲月裡，一碗便宜的涼茶，就是貧苦大眾的防病保護傘。</p>
             </div>
 
-            <!-- 第四頁 -->
             <div class="scroll-page" id="sp4">
                 <img class="scroll-img" src="https://i.imgs.ovh/2026/07/16/413622494cfc2c1d1280003f1df0caaa.jpg">
                 <p style="font-weight: bold; color: #e64a19; margin-top: 0;">第四章：掌櫃本草藥理手冊</p>
@@ -207,7 +846,6 @@
         </div>
     </div>
 
-    <!-- 謝幕畫面（汪靖琦、李卓穎 兩位靈魂製作人名單已為你高亮縫合！） -->
     <div class="credits-screen" id="creditsScreen">
         <div class="credits-container" id="creditsContainer">
             <h2 style="color: #d97706;">🏆 濟安堂大亨 · 傳承終章 🏆</h2>
@@ -246,14 +884,31 @@
         </div>
     </div>
 
-    <!-- 誠懇且嚴謹的免責與考證錯誤原諒聲明 -->
     <div class="footer-disclaimer">
         ⚠️ <b>免責與學術聲明：</b>本遊戲為東華三院邱子田紀念中學歷史科電子閱讀計劃之教育研究與非遺文創項目。遊戲內之歷史背景與中醫藥理知識考證自鄧家宙博士著作《香港非物質文化遺產系列：涼茶》。本內容僅作歷史科普體驗，不構成任何醫療與用藥建議。<br>
         <b>部分遊戲美術、音效及歷史老照片等素材源自網絡。本遊戲為學生非營利性學術探究，若有內容雷同、考證疏漏或任何排版錯誤，敬請包涵原諒，我們由衷感謝您的指正。</b>
     </div>
 
     <script>
+        // ==========================================
+        // 🔑 Firebase 配置
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCT8ayyWTU8CK5cd_UdC3FcGAlDtZ66Mwg",
+            authDomain: "herbal-tea-game.firebaseapp.com",
+            projectId: "herbal-tea-game",
+            storageBucket: "herbal-tea-game.firebasestorage.app",
+            messagingSenderId: "403654729340",
+            appId: "1:403654729340:web:18d4cd5b363c4b232633f9",
+            measurementId: "G-4631XL96N0"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // 核心數值與狀態
+        let playerName = ""; // 掌櫃名號
         let money = 500;       
         let reputation = 40;  
         let currentEra = "背景導覽";
@@ -264,7 +919,7 @@
         let currentScrollPage = 1;
 
         const IMAGES = {
-            cover: "https://i.imgs.ovh/2026/07/10/a0bd7d1514f314a392d982a9298d8e22.png",       
+            cover: "https://i.imgs.ovh/2026/07/10/a0bd7d1514f314a392d982a9298d8e22.png",        
             shanghai_street: "https://i.imgs.ovh/2026/07/09/a212d6c761b8505c5bafe02fb46c3402.jpg", 
             old_shop: "https://i.imgs.ovh/2026/07/10/a57071c3677ced2a5338fd5d2aa5304d.png",     
             water_tea: "https://i.imgs.ovh/2026/07/16/6b86e931616001d3a3a013d3fbc2a88e.jpg",    
@@ -282,15 +937,13 @@
             herbal_ice: "https://i.imgs.ovh/2026/07/09/f5f6f6508e0779123abc5000ed39e7d4.png",    
             landlady: "https://i.imgs.ovh/2026/07/09/18bae44e05a551165ef1094eb7a5774a.jpg",      
             heritage: "https://i.imgs.ovh/2026/07/10/796b0bfe36c68e2a9eb559485723fbf9.png",
-            // 動態變換的阿草頭像
             fairy_fly: "https://i.imgs.ovh/2026/07/16/413622494cfc2c1d1280003f1df0caaa.jpg",
             fairy_write: "https://i.imgs.ovh/2026/07/16/0c6f369e1b6a930f222c70f314b1e1a8.jpg",
             fairy_look_right: "https://i.imgs.ovh/2026/07/16/c55be92b638dfe93d545cabfacc078d6.jpg"
         };
 
-        // 阿草手記數據庫
         const fairyHints = {
-            "背景導覽": "新老闆，我們的店鋪正要開張呢！打開音樂，先點擊進入秘笈，讓阿草給你分享一些重要的非遺知識，然後我們再出發開張哦！",
+            "背景導覽": "新老闆，我們的店鋪正要開張呢！請在上方輸入您的大名，然後點擊開啟本草秘笈，阿草會為您引路哦！",
             "本草秘笈研讀": "不要有壓力，這些知識非常重要！在等一下開張、熬藥、診症的時候都會用到，你慢慢閱讀，記下草藥與歷史的精髓，準備好我們就開始挑戰！",
             "創業任務：採購渠道": "【南北行轉口網絡】1940年代末期因韓戰禁運，香港市民的中藥材面臨斷水。上環老牌『南北行』利用東南亞轉口渠道引進藥材，保障安全和誠信，這是非遺文化安全經營的命脈喔！",
             "研磨搗藥": "【研磨磨刀不誤砍柴工】將完整的粗草藥研磨成碎末，熬煮時中草藥的藥性才能充分釋放，請上下划動或猛烈點擊藥缽，幫阿草把草藥弄碎吧！",
@@ -328,7 +981,6 @@
         const gameBox = document.getElementById('game');
         const bgm = document.getElementById('bgm');
 
-        // 動態更新阿草常駐頭像
         function changeFairyAvatar(imageUrl) {
             const avatar = document.querySelector('.fairy-avatar');
             if (avatar) {
@@ -344,10 +996,12 @@
                 }).catch(e => console.log("需點擊觸發音訊"));
             }
         }
+        
         function toggleMute() {
             bgm.muted = !bgm.muted;
             document.getElementById('music-status').innerText = bgm.muted ? "🔇 已靜音" : "🔊 播放中";
         }
+        
         function playBeep(type) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -360,6 +1014,9 @@
             } catch(e) {}
         }
 
+        // ==========================================
+        // 📊 整合「掌櫃名字顯示」的狀態更新欄
+        // ==========================================
         function updateUI() {
             if (reputation < 0) reputation = 0;
             let repColor = reputation > 60 ? '#4caf50' : reputation > 30 ? '#ff9800' : '#f44336';
@@ -377,7 +1034,10 @@
 
             return `
                 <div class="status-container">
-                    <p style="margin:0 0 5px 0; font-weight:bold; font-size:13px;">📅 當前年代：${currentEra}</p>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; font-size: 13px;">
+                        <span>📅 當前年代：${currentEra}</span>
+                        <span style="color: var(--primary-color);">🏮 掌櫃：${playerName || '未登入'}</span>
+                    </div>
                     <div class="stats-grid">
                         <div class="stat-item">
                             <span>💰 濟安堂資產: $${money}</span>
@@ -445,11 +1105,35 @@
             }
         }
 
+        // ==========================================
+        // ✍️ 初始主介面：名號登錄
+        // ==========================================
         function showIntro() {
             money = 600; reputation = 50; currentEra = "背景導覽"; lastEraImg = IMAGES.cover;
             changeFairyAvatar(IMAGES.fairy_fly);
-            render(`<h3>🏮 濟安堂大亨 · 開張大吉</h3><p style="text-align:center;">點擊下方按鈕啟動復古音樂，先進入秘笈研讀，開啟百年傳承之旅！</p>`, 
-            [{ text: "📖 啟動音樂並閱讀本草秘笈", action: "initAudio(); openSecretScroll();" }]);
+            render(`
+                <h3>🏮 濟安堂大亨 · 開張大吉</h3>
+                <p style="text-align:center; font-size: 14px; line-height: 1.6; color: #5d4037; margin-bottom: 20px;">
+                    欲入濟安堂，先立招牌名。<br>請掌櫃留下您的名號，開啟守護嶺南中草藥文化的百年傳承之旅：
+                </p>
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <input type="text" id="player-name-input" class="ancient-input" placeholder="輸入名號（最多6字）" maxlength="6" style="width: 200px; padding: 10px; font-size: 16px; border: 2px solid #5d4037; border-radius: 6px; text-align: center; font-family: inherit; background: #fffdf7;">
+                </div>
+                <p style="text-align:center; font-size: 11px; color: #795548; margin-bottom: 10px;">（點擊按鈕將自動播放古典背景音樂並打開秘笈）</p>
+            `, [
+                { text: "📖 登立名號並研讀本草秘笈", action: "submitPlayerName()" }
+            ]);
+        }
+
+        function submitPlayerName() {
+            const inputName = document.getElementById('player-name-input').value.trim();
+            if (!inputName) {
+                alert("🏮 掌櫃，請留下您的名號才好開業哦！");
+                return;
+            }
+            playerName = inputName;
+            initAudio();
+            openSecretScroll();
         }
 
         function openSecretScroll() {
@@ -463,7 +1147,7 @@
             document.getElementById('prevScrollBtn').style.display = 'none';
             document.getElementById('nextScrollBtn').innerText = "下一頁 ▶";
             document.getElementById('nextScrollBtn').onclick = function() { changeScrollPage(1); };
-            gameBox.innerHTML = updateUI() + `<div class="image-stage" style="background: url('${IMAGES.cover}')"></div><h3>📜 阿草正在為你翻開新手秘笈...</h3><p>請認真研讀下方的非劇透知識寶典喔！</p>`;
+            gameBox.innerHTML = updateUI() + `<div class="image-stage" style="background: url('${IMAGES.cover}')"></div><h3>📜 阿草正在為你翻開新手秘笈...</h3><p>請認真研讀下方的非遺知識寶典喔！</p>`;
         }
 
         function build_shop_q1() {
@@ -481,7 +1165,7 @@
             let txt = "";
             if(type === 'A') { 
                 money -= 100; reputation += 20; unlockedBadges['b-agent'] = true; document.getElementById('b-agent').classList.add('unlocked');
-                txt = `<h3>👍 南北行渠道對接成功！</h3><p class="funny-alert">雖然轉口價格昂貴，但草藥安全合格，順利奠定了濟安堂誠信基石！解鎖圖鑑【南北行與轉口港】！</p>`;
+                txt = `<h3>👍 南北行渠道對接成功！</h3><p class="funny-alert">雖然轉口價格昂計，但草藥安全合格，順利奠定了濟安堂誠信基石！解鎖圖鑑【南北行與轉口港】！</p>`;
                 render(txt, [{ text: "🔨 草藥入庫，動手將草藥搗碎研磨！", action: "startHerbGrindingGame()" }]);
             }
             else if(type === 'B') { 
@@ -509,7 +1193,7 @@
                     <p style="font-size:12px; margin-bottom:12px;"><b>操作指引：</b>在下方圓形藥缽內<b>來回划動（Swipe）或快速點擊</b>，模擬用藥杵將草藥擣碎研細，以便完全釋放藥性！</p>
                     <div class="pestle-container" id="pestleContainer" onmousedown="grindHerbs()" ontouchstart="grindHerbs()">
                         <div class="bowl-bg"></div>
-                        <div class="herbs-in-bowl" id="rawHerbs"></div>
+                        <div class="rawHerbs" style="position: absolute; top: 30px; left: 30px; width: 60px; height: 60px; border-radius: 50%; transition: opacity 0.5s; background: repeating-linear-gradient(45deg, #a1887f, #a1887f 10px, #8d6e63 10px, #8d6e63 20px);" id="rawHerbs"></div>
                         <div class="herbs-ground" id="groundHerbs"></div>
                         <div class="pestle-icon" id="pestle">🔨</div>
                     </div>
@@ -714,7 +1398,7 @@
 
         /* COOKING MAMA 動作二：武火文火控溫 */
         let currentTemp = 20;
-        let isWuPhase = true; // 先武火，後文火
+        let isWuPhase = true; 
         let phaseTimer = null;
         let ticksInZone = 0;
         let tempGameActive = false;
@@ -734,9 +1418,7 @@
                     <div style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 15px 0;">
                         <div class="temp-meter">
                             <div class="temp-fill" id="tempFill"></div>
-                            <!-- 武火區 -->
                             <div class="target-zone wu"><span class="zone-label">🔥 武火區</span></div>
-                            <!-- 文火區 -->
                             <div class="target-zone wen"><span class="zone-label">🏮 文火區</span></div>
                         </div>
                         <div>
@@ -748,22 +1430,19 @@
             `;
             gameBox.innerHTML = updateUI() + gameHTML;
 
-            // 溫度冷卻衰減迴圈
             phaseTimer = setInterval(() => {
                 if(!tempGameActive) return;
                 if(currentTemp > 20) {
-                    currentTemp -= 1.8; // 溫度自動下降
+                    currentTemp -= 1.8; 
                     document.getElementById('tempFill').style.height = currentTemp + '%';
                     document.getElementById('tempText').innerText = Math.round(currentTemp + 20);
                 }
 
-                // 判斷區域
                 if(isWuPhase) {
-                    // 武火區：80% - 100% 之間
                     if(currentTemp >= 80) {
                         ticksInZone++;
                         document.getElementById('tempFill').style.backgroundColor = '#f44336';
-                        if(ticksInZone >= 15) { // 約 3 秒
+                        if(ticksInZone >= 15) { 
                             isWuPhase = false;
                             ticksInZone = 0;
                             playBeep('success');
@@ -775,7 +1454,6 @@
                         document.getElementById('tempFill').style.backgroundColor = '#4caf50';
                     }
                 } else {
-                    // 文火區：40% - 65% 之間
                     if(currentTemp >= 40 && currentTemp <= 65) {
                         ticksInZone++;
                         document.getElementById('tempFill').style.backgroundColor = '#ff9800';
@@ -881,7 +1559,7 @@
             else if(type === 'B') { 
                 money += 80; reputation += 15; unlockedBadges['b-pack'] = true; document.getElementById('b-pack').classList.add('unlocked'); lastEraImg = IMAGES.landlady; 
                 txt = `<h3>🚀 科學沖劑顆粒開闢全新版圖！</h3><p class="funny-alert">送往觀塘與荃灣工業區的即沖顆粒，成為工廠加班人熬夜標配，大獲成功！解鎖【現代顆粒沖劑】！</p>`;
-                render(txt, [{ text: "⏩ 迎戰地產黃金時代的長遠轉型", action: "triggerLandladyCrisis()" }]);
+                render(txt, [{ text: "⏩ 迎戰地產黃金時代 of 長遠轉型", action: "triggerLandladyCrisis()" }]);
             }
             else { 
                 money = 0; 
@@ -920,11 +1598,14 @@
             render(`<h3>🏛️ 現代香港：國家級非物質文化遺產</h3>
             <p style="text-align:justify;">香港涼茶正式列入國家級非遺！作為新一代繼承人，為了向世界展示涼茶是『有關自然界與宇宙知識和實踐』的防病哲學，你如何活性推廣品牌？</p>`, [
                 { text: "📜 方案 A：守護文化底蘊：將二十四節氣與因四時防病的中草藥智慧，印製成精美典雅的養生本草手冊，重塑非遺智慧本質。", action: "endGame('A')", hoverKey: "A_modern" },
-                { text: "🏫 方案 B：活性薪火相傳：與東華三院邱子田紀念中學深度合作，開展『校園非遺體驗工作坊』，讓中學生觸摸草藥、親自配茶。", action: "endGame('B')", hoverKey: "B_modern" },
+                { text: "🏫 方案 B：活性薪火相傳：與東華三院邱子田紀念中學深度合作，開展『校園非遺體驗工作坊』，讓中學生觸摸草藥、親手配茶。", action: "endGame('B')", hoverKey: "B_modern" },
                 { text: "📸 方案 C：單純網紅化：淡化草本理論與歷史，包裝成純文青風、高顏值適合拍照的網紅涼茶店賺取流量。", action: "endGame('C')", hoverKey: "C_modern" }
             ]);
         }
 
+        // ==========================================
+        // 🏆 整合後的終極通關結算（判定稱號 & 雲端同步）
+        // ==========================================
         function endGame(type) {
             if(type === 'A' || type === 'B') { 
                 reputation += 25; unlockedBadges['b-concept'] = true; document.getElementById('b-concept').classList.add('unlocked'); 
@@ -933,16 +1614,159 @@
                 reputation -= 20; playBeep('fail'); 
             }
 
-            let eval = reputation >= 85 ? "👑 國家級非遺傳承大宗師" : reputation >= 60 ? "📜 涼茶文化守護者" : "⚒️ 涼茶業資深匠人";
-            let scoreComment = reputation > 100 
-                ? `<span style="color:#ffd700; font-weight:bold; text-shadow:0 0 5px #ffd700;">🌟 超越歷史！解鎖大滿貫隱藏成就！</span>`
-                : `傳承者，你做得很棒！`;
+            // 👑 稱號與故事結局判定
+            let title = "濟安堂·百年末代老掌櫃";
+            let desc = "你穩紮穩打地經營著濟安堂。雖然沒有驚天動地的創新，但你數十年如一日地擦亮大銅壺、熬煮甘涼的草藥，是一方街坊心中最安心、最溫暖的依靠。";
 
-            let txt = `<h3>通關圓滿：${eval}</h3>
-            <p style="font-size:20px; color:#e65100; font-weight:bold;">🌟 最終聲望：${reputation}% | 💰 最終資產：$${money}</p>
-            <p style="font-size:13px; margin: 5px 0;">${scoreComment}</p>
-            <div class="encyclopedia"><strong>🎓 邱子田紀念中學非遺文創小組與指導老師叮囑：</strong><br>香港非遺涼茶強調的是人與大自然和諧共處、預防大於治療的古老智慧。唯有堅守中醫底蘊與教育傳承，老字號方能具備歷久彌新的文創生命力。</div>`;
-            render(txt, [{ text: "🎬 開啟謝幕盛典", action: "showCreditsScreen()" }]);
+            if (reputation >= 90) {
+                title = "國家級非遺傳承大宗師 👑";
+                desc = "你完美領悟了二十四節氣與防病智慧！將涼茶的養生文化注入現代校園，實至名歸的文化守護者與非遺大宗師！";
+            } else if (reputation > 70 && money < 200) {
+                title = "🕊️ 獅子山下活菩薩";
+                desc = "在流感肆虐的艱難時期，你寧可自己虧本也堅守「一仙茶」不漲價。你雖然沒有成為富豪，但你守護了街坊的生命，是香港同舟共濟人情味的化身！";
+            } else if (money >= 800 && reputation < 70) {
+                title = "💵 濟安堂·地產黃金期大亨";
+                desc = "面對包租婆三倍鋪租的壓榨，你大膽跨界研發「草本雪糕」與免煎沖劑。你用無敵的商業大腦擊敗了地產霸權，將濟安堂開遍各大超市！";
+            } else if (money < 100) {
+                title = "🍂 被地產霸權耽誤的掌櫃";
+                desc = "你空有一腔傳承熱血，卻不敵時代巨輪與包租婆無情的合約。雖然店舖無奈結業，但你堅守傳統、不向資本妥協的骨氣依然溫暖著街坊。";
+            }
+
+            const score = Math.round(reputation * 10 + money);
+
+            let txt = `
+                <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 5px;">📜 濟安堂傳承總結</h3>
+                <div style="background: #fffdf7; border: 2px dashed #b58d53; padding: 12px; border-radius: 6px; margin: 10px 0;">
+                    <h4 style="color: #c94a29; margin: 0 0 5px 0; font-size: 1.15rem; text-align: center;">🏆 榮譽稱號：${title}</h4>
+                    <p style="color: #554133; margin: 0; line-height: 1.5; font-size: 13px; text-align: justify;">${desc}</p>
+                </div>
+                <p style="text-align: center; font-size: 16px; color: #e65100; font-weight: bold; margin: 10px 0;">
+                    🌟 最終聲望：${reputation}% | 💰 最終資產：$${money}<br>
+                    🎯 傳承總積分：<span style="font-size: 22px;">${score}</span> 分
+                </p>
+                
+                <div class="leaderboard-board">
+                    <div class="leaderboard-title">🏆 全國濟安堂傳承功臣榜 (Top 10)</div>
+                    <table id="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th width="15%">名次</th>
+                                <th width="30%">掌櫃名</th>
+                                <th width="35%">榮譽稱號</th>
+                                <th width="20%">積分</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            <tr>
+                                <td colspan="4" style="color: #888; text-align: center;">正在連接雲端數據庫，同步金榜...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="encyclopedia" style="margin-top: 15px;">
+                    <strong>🎓 邱子田紀念中學非遺文創小組與指導老師叮囑：</strong><br>
+                    香港非遺涼茶強調的是人與大自然和諧共處、預防大於治療的古老智慧。唯有堅守中醫底蘊與教育傳承，老字號方能具備歷久彌新的文創生命力。
+                </div>
+            `;
+
+            render(txt, [
+                { text: "🎬 開啟謝幕盛典", action: "showCreditsScreen()" }
+            ]);
+
+            // 📤 上傳分數與稱號到 Firebase 數據庫
+            db.collection("Leaderboard").add({
+                name: playerName,
+                score: score,
+                title: title.replace(" 👑", ""), // 去除裝飾emoji儲存
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                console.log("數據成功上傳雲端！");
+                // 📥 載入並精算名次
+                loadLeaderboard(score);
+            })
+            .catch((error) => {
+                console.error("上傳失敗: ", error);
+                const lBody = document.getElementById('leaderboard-body');
+                if (lBody) lBody.innerHTML = `<tr><td colspan="4" style="color: red; text-align: center;">雲端同步失敗，請檢查網絡設定。</td></tr>`;
+            });
+        }
+
+        // ==========================================
+        // 📥 雲端排行榜拉取與「智慧名次判定」邏輯
+        // ==========================================
+        function loadLeaderboard(currentScore) {
+            db.collection("Leaderboard")
+                .orderBy("score", "desc")
+                .get()
+                .then((querySnapshot) => {
+                    let html = "";
+                    let rank = 1;
+                    let playerRank = 0; // 記錄當前玩家在全網排第幾名
+                    const totalPlayers = querySnapshot.size;
+
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        
+                        // 比對名字和本次分數來確定精確名次
+                        if (data.name === playerName && data.score === currentScore && playerRank === 0) {
+                            playerRank = rank;
+                        }
+
+                        // 渲染前 10 名
+                        if (rank <= 10) {
+                            const isGold = rank <= 3;
+                            html += `
+                                <tr>
+                                    <td class="${isGold ? 'gold-rank' : ''}">#${rank}</td>
+                                    <td style="font-weight: bold;">${data.name || '無名氏'}</td>
+                                    <td style="font-size: 0.85rem; color: #555;">${data.title || '普通掌櫃'}</td>
+                                    <td class="gold-rank">${data.score || 0}</td>
+                                </tr>
+                            `;
+                        }
+                        rank++;
+                    });
+
+                    const lBody = document.getElementById('leaderboard-body');
+                    if (lBody) {
+                        lBody.innerHTML = html || `<tr><td colspan="4" style="color: #888; text-align: center;">金榜空空如也，快來當第一個傳承功臣！</td></tr>`;
+                    }
+
+                    // 🎯 智慧名次溫馨反饋
+                    let feedbackHtml = "";
+                    if (playerRank <= 10 && playerRank > 0) {
+                        feedbackHtml = `
+                            <p class="congrats-flash" style="color: #d4af37; font-weight: bold; font-size: 13px; text-align: center; margin-top: 10px; margin-bottom: 5px;">
+                                🎉 恭喜 ${playerName} 掌櫃！您成功登上了全國傳承金榜第 ${playerRank} 名！🎉
+                            </p>`;
+                    } else if (playerRank > 10) {
+                        feedbackHtml = `
+                            <p style="color: #8c2d19; font-weight: bold; font-size: 12px; text-align: center; margin-top: 10px; margin-bottom: 5px; line-height: 1.4;">
+                                🍵 ${playerName} 掌櫃不要氣餒！您本次在全網 ${totalPlayers} 位掌櫃中獲得了第 ${playerRank} 名！<br>
+                                <span style="font-size: 11px; font-weight: normal; color: #665243;">再接再厲，調整經營策略，爭奪非遺大宗師寶座！</span>
+                            </p>`;
+                    }
+
+                    const table = document.getElementById('leaderboard-table');
+                    if (table) {
+                        const existingFeedback = document.getElementById('leaderboard-feedback');
+                        if (existingFeedback) {
+                            existingFeedback.innerHTML = feedbackHtml;
+                        } else {
+                            const feedbackDiv = document.createElement('div');
+                            feedbackDiv.id = 'leaderboard-feedback';
+                            feedbackDiv.innerHTML = feedbackHtml;
+                            table.after(feedbackDiv);
+                        }
+                    }
+                })
+                .catch((error) => {
+                    console.error("加載排行榜失敗: ", error);
+                    const lBody = document.getElementById('leaderboard-body');
+                    if (lBody) lBody.innerHTML = `<tr><td colspan="4" style="color: red; text-align: center;">無法載入雲端排行榜。</td></tr>`;
+                });
         }
 
         function triggerGameOver(reason) {
