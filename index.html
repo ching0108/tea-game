@@ -591,11 +591,12 @@
             animation: scrollCredits 28s linear forwards; 
             text-align: center; 
             padding-bottom: 120px; 
+            will-change: top;
         }
         
         @keyframes scrollCredits { 
             0% { top: 100%; } 
-            100% { top: -150%; } 
+            100% { top: -80%; } 
         }
         
         .credits-section { 
@@ -617,15 +618,19 @@
         }
         
         .credits-restart-btn { 
-            background: #d97706; 
-            color: #fff; 
-            border: none; 
-            padding: 12px 28px; 
-            font-size: 14px; 
-            font-weight: bold; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            margin-top: 30px; 
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #d97706;
+        color: #fff;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
         }
         
         .landlady-dialog { 
@@ -848,39 +853,34 @@
 
     <div class="credits-screen" id="creditsScreen">
         <div class="credits-container" id="creditsContainer">
-            <h2 style="color: #d97706;">🏆 濟安堂大亨 · 傳承終章 🏆</h2>
-            <div class="credits-section">
-                <div class="credits-title">項目策劃與文創設計</div>
-                <div class="credits-name" style="font-weight: bold; color: #ffd700; font-size: 20px; letter-spacing: 2px;">
-                    汪靖琦、李卓穎
-                </div>
-                <div class="credits-name" style="font-size: 14px; color: #b0bec5; margin-top: 5px;">
-                    東華三院邱子田紀念中學 · 非遺文創設計小組
-                </div>
+            <div class="credits-container" id="creditsContainer" style="position:absolute; width:100%; top:100%; animation:scrollCredits 28s linear forwards; text-align:center; padding-bottom:120px;">
+        <h2 style="color: #d97706; margin-top: 20vh;">🏆 濟安堂大亨 · 榮譽出品 🏆</h2>
+        
+        <div class="credits-section">
+            <div class="credits-title">項目策劃與文創設計</div>
+            <div class="credits-name" style="font-weight: bold; color: #ffd700; font-size: 20px;">汪靖琦、李卓穎</div>
+            <div class="credits-name" style="font-size: 14px; color: #b0bec5;">東華三院邱子田紀念中學 · 非遺文創小組</div>
+        </div>
+
+        <div class="credits-section">
+            <div class="credits-title">技術與藝術創作支援</div>
+            <div class="credits-name">美術與圖像設計：豆包 AI</div>
+            <div class="credits-name">互動邏輯與學術協作：Gemini AI</div>
+            <div class="credits-name">指導老師：馮皓琳 老師</div>
+        </div>
+
+        <div class="credits-section">
+            <div class="credits-title">參考文獻與學術資源</div>
+            <div class="credits-name" style="font-size: 13px; line-height: 1.6; color: #f5f5f4; text-align: left; padding: 0 40px;">
+                1. 鄧家宙：《香港非物質文化遺產系列：涼茶》，中華書局，2022年。<br>
+                2. 香港青年協會：<a href="https://clc.hkfyg.org.hk/2026/04/11/%E9%9D%9E%E9%81%BA%E4%B8%AD%E9%86%AB%E6%B6%BC%E8%8C%B6%E9%AB%94%E9%A9%97%E5%B7%A5%E4%BD%9C%E5%9D%8A/" style="color:#d97706;">非遺中醫涼茶體驗工作坊</a><br>
+                3. 公民好學：<a href="https://ls.chiculture.org.hk/tc/passing-the-torch/650" style="color:#d97706;">涼茶舖與香港史</a><br>
+                4. 明周文化：<a href="https://www.mpweekly.com/culture/204325" style="color:#d97706;">熱涼茶變成凍雪糕</a>
             </div>
-            <div class="credits-section">
-                <div class="credits-title">學術顧問與歷史考證指導</div>
-                <div class="credits-name">馮皓琳 老師</div>
-            </div>
-            <div class="credits-section">
-                <div class="credits-title">文獻理論參考</div>
-                <div class="credits-name">鄧家宙博士著作《香港非物質文化遺產系列：涼茶》</div>
-            </div>
-            <div class="credits-section">
-                <div class="credits-title">AI 圖像生成技術支援</div>
-                <div class="credits-name">豆包 AI & 智譜清言</div>
-            </div>
-            <div class="credits-section">
-                <div class="credits-title">歷史影像與視覺素材來源</div>
-                <div class="credits-name">Google 歷史文獻檢索</div>
-            </div>
-            <div class="credits-section">
-                <div class="credits-title">互動邏輯與歷史考證協作</div>
-                <div class="credits-name">Gemini AI</div>
-            </div>
-            <div class="credits-section">
-                <button class="credits-restart-btn" onclick="restartFromCredits()">🔄 返回主介面</button>
-            </div>
+        </div>
+
+        <button class="credits-restart-btn" onclick="location.reload()" style="background:#d97706; color:#fff; border:none; padding:12px 28px; border-radius:6px; cursor:pointer;">🔄 返回主介面</button>
+    </div>
         </div>
     </div>
 
@@ -1168,11 +1168,17 @@
                 txt = `<h3>👍 南北行渠道對接成功！</h3><p class="funny-alert">雖然轉口價格昂計，但草藥安全合格，順利奠定了濟安堂誠信基石！解鎖圖鑑【南北行與轉口港】！</p>`;
                 render(txt, [{ text: "🔨 草藥入庫，動手將草藥搗碎研磨！", action: "startHerbGrindingGame()" }]);
             }
-            else if(type === 'B') { 
-                money -= 20; reputation -= 20; playBeep('fail'); 
-                txt = `<h3>❌ 遭遇嚴重的霉變與摻假草藥！</h3><p class="funny-alert">黑市草藥受潮霉變，甚至混入了有毒的『斷腸草』！街坊對我們誠信大打折扣，商譽重挫！</p>`;
-                render(txt, [{ text: "⏩ 繼續清理店面與配置設備", action: "build_shop_q2()" }]);
-            }
+            else if (type === 'B') { 
+            money -= 20; 
+            reputation -= 50; 
+            playBeep('fail'); 
+            render(`
+                <div class="interaction-stage">
+                    <img src="https://i.imgs.ovh/2026/07/17/afe59f7fb61e4b74778854762c24c6eb.jpg" style="width:100%; border-radius:10px; margin-bottom:10px;">
+                    <p class="funny-alert">🚨 涼茶中毒事件！</p>
+                    <p style="text-align:justify; font-size:14px; color:#5d4037;">因貪圖便宜採購黑市草藥，草藥中混入了劇毒的『斷腸草』，導致顧客集體食物中毒送院！濟安堂聲譽瞬間崩塌，被勒令停業並需賠償鉅額醫藥費。</p>
+                </div>`, [{ text: "🍁 時代遺憾·重新開始", action: "location.reload()" }]);
+        }
             else { 
                 money -= 0; reputation += 5; 
                 txt = `<h3>⛰️ 踏實採摘野生草藥</h3><p class="funny-alert">採摘草藥雖安全，但產量遠跟不上開店需求，採集極耗體力，店鋪僅能勉強維持最低限度開張。</p>`;
